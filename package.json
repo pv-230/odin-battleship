@@ -7,8 +7,9 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "webpack --watch"
+    "test": "jest",
+    "watch": "webpack --watch",
+    "testwatch": ""
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   },
   "homepage": "https://github.com/pv-230/odin-battleship#readme",
   "devDependencies": {
+    "@types/jest": "^29.2.0",
     "css-loader": "^6.7.1",
     "eslint": "^8.25.0",
     "eslint-config-airbnb-base": "^15.0.0",
