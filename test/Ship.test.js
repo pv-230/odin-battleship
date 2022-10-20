@@ -79,8 +79,8 @@ describe('Ship', () => {
   });
 
   test('Create new ship bottom-right corner without errors', () => {
-    expect(() => Ship(5, { origin: 'A10', direction: 'UP' })).not.toThrow();
-    expect(() => Ship(5, { origin: 'A10', direction: 'LEFT' })).not.toThrow();
+    expect(() => Ship(5, { origin: 'J10', direction: 'UP' })).not.toThrow();
+    expect(() => Ship(5, { origin: 'J10', direction: 'LEFT' })).not.toThrow();
   });
 
   test('Get ship length', () => {

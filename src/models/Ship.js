@@ -17,6 +17,18 @@ const posIsValid = (len, pos) => {
     ) {
       return false;
     }
+
+    // Check overflow
+    if (
+      (pos.direction === 'UP' &&
+        originLetter.charCodeAt(0) - (len - 1) < 65) ||
+      (pos.direction === 'DOWN' &&
+        originLetter.charCodeAt(0) + (len - 1) > 74) ||
+      (pos.direction === 'LEFT' && originNum - (len - 1) < 1) ||
+      (pos.direction === 'RIGHT' && originNum + (len - 1) > 10)
+    ) {
+      return false;
+    }
   } catch {
     return false;
   }
