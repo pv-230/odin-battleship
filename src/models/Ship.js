@@ -89,6 +89,4 @@ const Ship = (len, pos) => {
   };
 };
 
-// const ship = Ship(5, { origin: 'A1', direction: 'DOWN' });
-
 module.exports = Ship;
