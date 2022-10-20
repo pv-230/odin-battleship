@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "jest",
-    "watch": "webpack --watch",
-    "testwatch": ""
+    "wp-watch": "webpack --watch",
+    "jest-watch": "jest --watch"
   },
   "repository": {
     "type": "git",
