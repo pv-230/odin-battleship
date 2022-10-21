@@ -17,43 +17,46 @@ const Gameboard = () => {
    * Places a new ship on the gameboard.
    * @param {number} len Length of the ship to place.
    * @param {object} pos Position of the ship.
-   * @returns true if successful, false otherwise.
    */
   const placeShip = (len, pos) => {
     const ship = Ship(len, pos);
     const shipDirection = ship.getPosition().direction;
     const gridCopy = JSON.parse(JSON.stringify(grid));
     const gridCoord = toGridCoord(ship.getPosition().origin);
+    const err = 'Ship cannot be placed on occupied tiles';
 
     if (shipDirection === 'UP') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
-      for (; row >= 0; row--) {
-        if (gridCopy[row][col].ship) return false;
+      for (let i = len; i > 0; i--) {
+        if (gridCopy[row][col].ship) throw new Error(err);
         gridCopy[row][col].ship = ship;
+        row--;
       }
     } else if (shipDirection === 'DOWN') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
-      for (; row <= 9; row++) {
-        if (gridCopy[row][col].ship) return false;
+      for (let i = len; i > 0; i--) {
+        if (gridCopy[row][col].ship) throw new Error(err);
         gridCopy[row][col].ship = ship;
+        row++;
       }
     } else if (shipDirection === 'LEFT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
-      for (; col >= 0; col--) {
-        if (gridCopy[row][col].ship) return false;
+      for (let i = len; i > 0; i--) {
+        if (gridCopy[row][col].ship) throw new Error(err);
         gridCopy[row][col].ship = ship;
+        col--;
       }
     } else if (shipDirection === 'RIGHT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
-      for (; col <= 9; col++) {
-        if (gridCopy[row][col].ship) return false;
+      for (let i = len; i > 0; i--) {
+        if (gridCopy[row][col].ship) throw new Error(err);
         gridCopy[row][col].ship = ship;
+        col++;
       }
     } else {
       throw new Error('Cannot place ship: Ship direction invalid');
     }
     grid = gridCopy;
-    return true;
   };
 
   /**
