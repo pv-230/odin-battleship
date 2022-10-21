@@ -76,8 +76,14 @@ const Ship = (len, pos) => {
     return false;
   };
 
+  /**
+   * @returns An object representing the position of a ship.
+   */
   const getPosition = () => JSON.parse(JSON.stringify(position));
 
+  /**
+   * Increments the hit counter for the ship.
+   */
   const hit = () => {
     hits += 1;
   };
