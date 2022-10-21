@@ -52,15 +52,17 @@ describe('Ship', () => {
 
   test('Throw if no room for ship on grid', () => {
     expect(() => Ship(2, { origin: 'A1', direction: 'UP' })).toThrow();
-    expect(() => Ship(2, { origin: 'A1', direction: 'LEFT' })).toThrow();
     expect(() => Ship(2, { origin: 'A10', direction: 'UP' })).toThrow();
-    expect(() => Ship(2, { origin: 'A10', direction: 'RIGHT' })).toThrow();
+    expect(() => Ship(5, { origin: 'D1', direction: 'UP' })).toThrow();
     expect(() => Ship(2, { origin: 'J1', direction: 'DOWN' })).toThrow();
-    expect(() => Ship(2, { origin: 'J1', direction: 'LEFT' })).toThrow();
     expect(() => Ship(2, { origin: 'J10', direction: 'DOWN' })).toThrow();
-    expect(() => Ship(2, { origin: 'J10', direction: 'RIGHT' })).toThrow();
     expect(() => Ship(5, { origin: 'G10', direction: 'DOWN' })).toThrow();
+    expect(() => Ship(2, { origin: 'A1', direction: 'LEFT' })).toThrow();
+    expect(() => Ship(2, { origin: 'J1', direction: 'LEFT' })).toThrow();
     expect(() => Ship(5, { origin: 'A4', direction: 'LEFT' })).toThrow();
+    expect(() => Ship(2, { origin: 'A10', direction: 'RIGHT' })).toThrow();
+    expect(() => Ship(2, { origin: 'J10', direction: 'RIGHT' })).toThrow();
+    expect(() => Ship(5, { origin: 'J7', direction: 'RIGHT' })).toThrow();
   });
 
   test('Create new ship top-left corner without errors', () => {
@@ -97,14 +99,18 @@ describe('Ship', () => {
 
   test('Ship is at correct position when created (default)', () => {
     const ship = Ship(5, defaultPos);
-    expect(ship.getPosition()).toHaveProperty('origin', 'A1');
-    expect(ship.getPosition()).toHaveProperty('direction', 'DOWN');
+    expect(ship.getPosition()).toMatchObject({
+      origin: 'A1',
+      direction: 'DOWN',
+    });
   });
 
   test('Ship is at correct position when created (custom)', () => {
     const ship = Ship(5, { origin: 'F10', direction: 'DOWN' });
-    expect(ship.getPosition()).toHaveProperty('origin', 'F10');
-    expect(ship.getPosition()).toHaveProperty('direction', 'DOWN');
+    expect(ship.getPosition()).toMatchObject({
+      origin: 'F10',
+      direction: 'DOWN',
+    });
   });
 
   test('New ship registers a hit against it', () => {
@@ -122,5 +128,13 @@ describe('Ship', () => {
     sunkShip.hit();
     expect(sunkShip.getHits()).toBe(2);
     expect(sunkShip.isSunk()).toBe(true);
+  });
+
+  test('Ship position case insensitive', () => {
+    const ship = Ship(5, { origin: 'a1', direction: 'down' });
+    expect(ship.getPosition()).toMatchObject({
+      origin: 'A1',
+      direction: 'DOWN',
+    });
   });
 });

@@ -2,30 +2,29 @@
 const posIsValid = (len, pos) => {
   try {
     // Check origin
-    const originLetter = pos.origin.slice(0, 1);
+    const originLetter = pos.origin.slice(0, 1).toUpperCase();
     const originNum = parseInt(pos.origin.slice(1), 10);
     if (!originLetter.match(/[A-J]/) || !(originNum >= 1 && originNum <= 10)) {
       return false;
     }
 
     // Check direction
+    const direction = pos.direction.toUpperCase();
     if (
-      pos.direction !== 'UP' &&
-      pos.direction !== 'DOWN' &&
-      pos.direction !== 'LEFT' &&
-      pos.direction !== 'RIGHT'
+      direction !== 'UP' &&
+      direction !== 'DOWN' &&
+      direction !== 'LEFT' &&
+      direction !== 'RIGHT'
     ) {
       return false;
     }
 
     // Check overflow
     if (
-      (pos.direction === 'UP' &&
-        originLetter.charCodeAt(0) - (len - 1) < 65) ||
-      (pos.direction === 'DOWN' &&
-        originLetter.charCodeAt(0) + (len - 1) > 74) ||
-      (pos.direction === 'LEFT' && originNum - (len - 1) < 1) ||
-      (pos.direction === 'RIGHT' && originNum + (len - 1) > 10)
+      (direction === 'UP' && originLetter.charCodeAt(0) - (len - 1) < 65) ||
+      (direction === 'DOWN' && originLetter.charCodeAt(0) + (len - 1) > 74) ||
+      (direction === 'LEFT' && originNum - (len - 1) < 1) ||
+      (direction === 'RIGHT' && originNum + (len - 1) > 10)
     ) {
       return false;
     }
@@ -53,7 +52,10 @@ const Ship = (len, pos) => {
 
   // Initialize values
   const length = len;
-  const position = pos;
+  const position = {
+    origin: pos.origin.toUpperCase(),
+    direction: pos.direction.toUpperCase(),
+  };
   let hits = 0;
 
   /**
