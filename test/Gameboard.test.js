@@ -1,12 +1,16 @@
 const Gameboard = require('../src/models/Gameboard');
 
+const errLen = 'Invalid ship length';
+const errPos = 'Invalid ship position';
+const errOccupied = 'Ship cannot be placed on occupied tiles';
+let gameboard;
+
 describe('Gameboard', () => {
-  const errLen = 'Invalid ship length';
-  const errPos = 'Invalid ship position';
-  const errOccupied = 'Ship cannot be placed on occupied tiles';
+  beforeEach(() => {
+    gameboard = Gameboard();
+  });
 
   test('Can place new ship on gameboard (up)', () => {
-    const gameboard = Gameboard();
     gameboard.placeShip(2, { origin: 'F1', direction: 'UP' });
     expect(gameboard.getTile('F1').ship.getPosition()).toHaveProperty(
       'origin',
@@ -20,7 +24,6 @@ describe('Gameboard', () => {
   });
 
   test('Can place new ship on gameboard (down)', () => {
-    const gameboard = Gameboard();
     gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
     expect(gameboard.getTile('A1').ship.getPosition()).toHaveProperty(
       'origin',
@@ -34,7 +37,6 @@ describe('Gameboard', () => {
   });
 
   test('Can place new ship on gameboard (left)', () => {
-    const gameboard = Gameboard();
     gameboard.placeShip(2, { origin: 'A6', direction: 'LEFT' });
     expect(gameboard.getTile('A6').ship.getPosition()).toHaveProperty(
       'origin',
@@ -48,7 +50,6 @@ describe('Gameboard', () => {
   });
 
   test('Can place new ship on gameboard (right)', () => {
-    const gameboard = Gameboard();
     gameboard.placeShip(2, { origin: 'A1', direction: 'RIGHT' });
     expect(gameboard.getTile('A1').ship.getPosition()).toHaveProperty(
       'origin',
@@ -62,7 +63,6 @@ describe('Gameboard', () => {
   });
 
   test('Cannot place ship on occupied tiles', () => {
-    const gameboard = Gameboard();
     expect(() =>
       gameboard.placeShip(5, { origin: 'A1', direction: 'DOWN' })
     ).not.toThrow();
@@ -73,14 +73,42 @@ describe('Gameboard', () => {
   });
 
   test('Throws when placing ship at invalid position', () => {
-    const gameboard = Gameboard();
     expect(() => gameboard.placeShip(2, {})).toThrowError(errPos);
   });
 
   test('Throws when placing ship with invalid length', () => {
-    const gameboard = Gameboard();
     expect(() =>
       gameboard.placeShip(0, { origin: 'A1', direction: 'DOWN' })
     ).toThrowError(errLen);
+  });
+
+  test('Attacks can miss', () => {
+    expect(gameboard.getTile('A1').missed).toBe(false);
+    expect(() => gameboard.receiveAttack('A1')).not.toThrow();
+    expect(gameboard.getTile('A1').missed).toBe(true);
+  });
+
+  test('Attacks can hit', () => {
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' })
+    ).not.toThrow();
+    gameboard.receiveAttack('B1');
+    expect(gameboard.getTile('B1').ship.getHits()).toBe(1);
+  });
+
+  test('Attacks can sink', () => {
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' })
+    ).not.toThrow();
+    gameboard.receiveAttack('A1');
+    gameboard.receiveAttack('B1');
+    expect(gameboard.getTile('A1').ship.getHits()).toBe(2);
+    expect(gameboard.getTile('A1').ship.isSunk()).toBe(true);
+  });
+
+  test('Throw if receiving attack to invalid tile', () => {
+    expect(() => gameboard.receiveAttack('Z11')).toThrowError(
+      'Invalid tile coordinates'
+    );
   });
 });

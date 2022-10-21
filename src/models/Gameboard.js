@@ -1,9 +1,9 @@
 const Ship = require('./Ship');
 
-const toGridCoord = (origin) => {
+const toGridCoord = (tileStr) => {
   // Convert row substring to uppercase ASCII code and subtract 65
-  const row = origin.slice(0, 1).toUpperCase().charCodeAt(0) - 65;
-  const col = parseInt(origin.slice(1), 10) - 1;
+  const row = tileStr.slice(0, 1).toUpperCase().charCodeAt(0) - 65;
+  const col = parseInt(tileStr.slice(1), 10) - 1;
   return { row, col };
 };
 
@@ -63,14 +63,36 @@ const Gameboard = () => {
    * @param {string} tile A tile on the grid (e.g. 'A1').
    * @returns Object containing tile properties.
    */
-  const getTile = (tile) => {
-    const { row, col } = toGridCoord(tile);
+  const getTile = (tileStr) => {
+    const { row, col } = toGridCoord(tileStr);
     return grid[row][col];
+  };
+
+  /**
+   * Allows a board to register a hit or miss for a tile.
+   * @param {string} tileStr Represents the tile to attack.
+   */
+  const receiveAttack = (tileStr) => {
+    const { row, col } = toGridCoord(tileStr);
+    let tile;
+
+    try {
+      tile = grid[row][col];
+    } catch {
+      throw new Error('Invalid tile coordinates');
+    }
+
+    if (tile.ship) {
+      tile.ship.hit();
+    } else {
+      tile.missed = true;
+    }
   };
 
   return {
     placeShip,
     getTile,
+    receiveAttack,
   };
 };
 
