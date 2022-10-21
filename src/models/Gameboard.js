@@ -1,56 +1,58 @@
 const Ship = require('./Ship');
 
+const toGridCoord = (origin) => {
+  // Convert row substring to uppercase ASCII code and subtract 65
+  const row = origin.slice(0, 1).toUpperCase().charCodeAt(0) - 65;
+  const col = parseInt(origin.slice(1), 10) - 1;
+  return { row, col };
+};
+
 const Gameboard = () => {
-  // Creates the grid
-  const grid = {};
-  for (let code = 65; code < 75; code++) {
-    grid[String.fromCharCode(code)] = [...new Array(10)].map(() => ({
-      ship: null,
-      missed: false,
-    }));
-  }
+  // Creates a 2D grid of tiles and their associated properties
+  let grid = [...new Array(10)].map(() =>
+    [...new Array(10)].map(() => ({ ship: null, missed: false }))
+  );
 
   /**
    * Places a new ship on the gameboard.
-   * @param {number} len
-   * @param {object} pos
+   * @param {number} len Length of the ship to place.
+   * @param {object} pos Position of the ship.
    * @returns true if successful, false otherwise.
    */
   const placeShip = (len, pos) => {
-    try {
-      const ship = Ship(len, pos);
-      const shipOrigin = ship.getPosition().origin;
-      const originLetter = shipOrigin.slice(0, 1);
-      const originNum = parseInt(shipOrigin.slice(1), 10);
-      const shipDirection = ship.getPosition().direction;
+    const ship = Ship(len, pos);
+    const shipDirection = ship.getPosition().direction;
+    const gridCopy = JSON.parse(JSON.stringify(grid));
+    const gridCoord = toGridCoord(ship.getPosition().origin);
 
-      if (shipDirection === 'UP') {
-        let code = originLetter.charCodeAt(0);
-        for (let i = 0; i < len; i++) {
-          grid[String.fromCharCode(code)][originNum] = {
-            ship,
-            missed: false,
-          };
-          // ASCII code is decremented to move up rows
-          code--;
-        }
+    if (shipDirection === 'UP') {
+      let { row, col } = gridCoord; // eslint-disable-line prefer-const
+      for (; row >= 0; row--) {
+        if (gridCopy[row][col].ship) return false;
+        gridCopy[row][col].ship = ship;
       }
-
-      if (shipDirection === 'DOWN') {
-        let code = originLetter.charCodeAt(0);
-        for (let i = 0; i < len; i++) {
-          grid[String.fromCharCode(code)][originNum] = {
-            ship,
-            missed: false,
-          };
-          // ASCII code is incremented to move down rows
-          code++;
-        }
+    } else if (shipDirection === 'DOWN') {
+      let { row, col } = gridCoord; // eslint-disable-line prefer-const
+      for (; row <= 9; row++) {
+        if (gridCopy[row][col].ship) return false;
+        gridCopy[row][col].ship = ship;
       }
-    } catch (err) {
-      return false;
+    } else if (shipDirection === 'LEFT') {
+      let { row, col } = gridCoord; // eslint-disable-line prefer-const
+      for (; col >= 0; col--) {
+        if (gridCopy[row][col].ship) return false;
+        gridCopy[row][col].ship = ship;
+      }
+    } else if (shipDirection === 'RIGHT') {
+      let { row, col } = gridCoord; // eslint-disable-line prefer-const
+      for (; col <= 9; col++) {
+        if (gridCopy[row][col].ship) return false;
+        gridCopy[row][col].ship = ship;
+      }
+    } else {
+      throw new Error('Cannot place ship: Ship direction invalid');
     }
-
+    grid = gridCopy;
     return true;
   };
 
@@ -59,9 +61,8 @@ const Gameboard = () => {
    * @returns Object containing tile properties.
    */
   const getTile = (tile) => {
-    const letter = tile.slice(0, 1);
-    const num = parseInt(tile.slice(1), 10);
-    return grid[letter][num];
+    const { row, col } = toGridCoord(tile);
+    return grid[row][col];
   };
 
   return {
