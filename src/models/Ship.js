@@ -1,4 +1,9 @@
-// Private helper function to validate positions
+/**
+ * Checks if the given position conforms to the expected structure and values
+ * @param {number} len Ship length
+ * @param {object} pos Ship position
+ * @returns true if position is valid, false otherwise
+ */
 const posIsValid = (len, pos) => {
   try {
     // Check origin

@@ -111,4 +111,31 @@ describe('Gameboard', () => {
       'Invalid tile coordinates'
     );
   });
+
+  test('Not defeated with empty board', () => {
+    expect(gameboard.isDefeated()).toBe(false);
+  });
+
+  test('Not defeated with one undamaged ship', () => {
+    gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
+    expect(gameboard.isDefeated()).toBe(false);
+  });
+
+  test('Not defeated with one sunk ship and one undamaged ship', () => {
+    gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
+    gameboard.placeShip(2, { origin: 'A2', direction: 'DOWN' });
+    gameboard.receiveAttack('A2');
+    gameboard.receiveAttack('B2');
+    expect(gameboard.isDefeated()).toBe(false);
+  });
+
+  test('Is defeated with all ships sunk', () => {
+    gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
+    gameboard.placeShip(2, { origin: 'A2', direction: 'DOWN' });
+    gameboard.receiveAttack('A1');
+    gameboard.receiveAttack('B1');
+    gameboard.receiveAttack('A2');
+    gameboard.receiveAttack('B2');
+    expect(gameboard.isDefeated()).toBe(true);
+  });
 });
