@@ -19,7 +19,7 @@ const toGridCoord = (tileStr) => {
 const Gameboard = () => {
   // Creates a 2D grid of tiles and their associated properties
   let grid = [...new Array(10)].map(() =>
-    [...new Array(10)].map(() => ({ ship: null, missed: false }))
+    [...new Array(10)].map(() => ({ ship: null, status: 0 }))
   );
 
   // Contains ships that are present on the board
@@ -84,6 +84,7 @@ const Gameboard = () => {
   /**
    * Allows a board to register a hit or miss for a tile.
    * @param {string} tileStr Represents the tile to attack.
+   * @returns true if successful or false if tile has already been attacked.
    */
   const receiveAttack = (tileStr) => {
     const { row, col } = toGridCoord(tileStr);
@@ -95,12 +96,18 @@ const Gameboard = () => {
       throw new Error('Invalid tile coordinates');
     }
 
+    // Tile has already been attacked
+    if (tile.status !== 0) return false;
+
     // Hits a ship if it occupies the tile, otherwise tile is marked as missed
     if (tile.ship) {
       tile.ship.hit();
+      tile.status = 2;
     } else {
-      tile.missed = true;
+      tile.status = 1;
     }
+
+    return true;
   };
 
   /**

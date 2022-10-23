@@ -83,25 +83,24 @@ describe('Gameboard', () => {
   });
 
   test('Attacks can miss', () => {
-    expect(gameboard.getTile('A1').missed).toBe(false);
-    expect(() => gameboard.receiveAttack('A1')).not.toThrow();
-    expect(gameboard.getTile('A1').missed).toBe(true);
+    expect(gameboard.getTile('A1').status).toBe(0);
+    expect(gameboard.receiveAttack('A1')).toBe(true);
+    expect(gameboard.getTile('A1').status).toBe(1);
   });
 
   test('Attacks can hit', () => {
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' })
-    ).not.toThrow();
-    gameboard.receiveAttack('B1');
+    gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
+    expect(gameboard.receiveAttack('B1')).toBe(true);
     expect(gameboard.getTile('B1').ship.getHits()).toBe(1);
+    expect(gameboard.getTile('B1').status).toBe(2);
   });
 
   test('Attacks can sink', () => {
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' })
-    ).not.toThrow();
-    gameboard.receiveAttack('A1');
-    gameboard.receiveAttack('B1');
+    gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
+    expect(gameboard.receiveAttack('A1')).toBe(true);
+    expect(gameboard.getTile('A1').status).toBe(2);
+    expect(gameboard.receiveAttack('B1')).toBe(true);
+    expect(gameboard.getTile('B1').status).toBe(2);
     expect(gameboard.getTile('A1').ship.getHits()).toBe(2);
     expect(gameboard.getTile('A1').ship.isSunk()).toBe(true);
   });
@@ -126,6 +125,7 @@ describe('Gameboard', () => {
     gameboard.placeShip(2, { origin: 'A2', direction: 'DOWN' });
     gameboard.receiveAttack('A2');
     gameboard.receiveAttack('B2');
+    expect(gameboard.getTile('A2').ship.isSunk()).toBe(true);
     expect(gameboard.isDefeated()).toBe(false);
   });
 
@@ -137,5 +137,12 @@ describe('Gameboard', () => {
     gameboard.receiveAttack('A2');
     gameboard.receiveAttack('B2');
     expect(gameboard.isDefeated()).toBe(true);
+  });
+
+  test('Cannot attack same tile twice', () => {
+    gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
+    expect(gameboard.receiveAttack('A1')).toBe(true);
+    expect(gameboard.receiveAttack('A1')).toBe(false);
+    expect(gameboard.getTile('A1').ship.getHits()).toBe(1);
   });
 });
