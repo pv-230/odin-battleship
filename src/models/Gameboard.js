@@ -87,10 +87,10 @@ const Gameboard = () => {
    * @returns true if successful or false if tile has already been attacked.
    */
   const receiveAttack = (tileStr) => {
-    const { row, col } = toGridCoord(tileStr);
     let tile;
 
     try {
+      const { row, col } = toGridCoord(tileStr);
       tile = grid[row][col];
     } catch {
       throw new Error('Invalid tile coordinates');
