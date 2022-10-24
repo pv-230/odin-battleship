@@ -16,8 +16,19 @@ const Player = (n) => {
     }
   }
 
+  /**
+   *
+   * @returns The player's name.
+   */
   const getName = () => name;
 
+  /**
+   * Allows a player to attack a gameboard at a specific tile or at a random
+   * tile.
+   * @param {object} gameboard The gameboard to attack.
+   * @param {string} tile The tile to attack (e.g. 'A1').
+   * @returns The tile that was successfully attack or null otherwise.
+   */
   const attack = (gameboard, tile = null) => {
     // Player attacks a specific tile
     if (tile) return gameboard.receiveAttack(tile) ? tile : null;
