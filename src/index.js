@@ -1,1 +1,1 @@
-import './reset.css';
+import './components/content/content';
