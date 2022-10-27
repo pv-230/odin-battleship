@@ -1,13 +1,11 @@
 import './gameboard.css';
-import '../../models/Gameboard';
-import '../../models/Player';
 
 /**
  *
  * @param {object} gb Gameboard object.
  * @param {boolean} showShips True if gameboard should display ship positions
  */
-const displayBoard = (gameboard, player) => {
+const renderBoard = (gameboard, player) => {
   let gameboardDOM;
 
   // Selects the appropriate board
@@ -46,4 +44,4 @@ const displayBoard = (gameboard, player) => {
   }
 };
 
-export { displayBoard };
+export { renderBoard };

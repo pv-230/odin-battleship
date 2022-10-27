@@ -1,2 +1,3 @@
-import './components/content/content';
-import './GameController';
+import initialize from './controllers/GameController';
+
+initialize();
