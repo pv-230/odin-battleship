@@ -32,8 +32,8 @@ const initialize = () => {
   computerBoard.placeShip(3, { origin: 'J7', direction: 'UP' });
   computerBoard.placeShip(2, { origin: 'J9', direction: 'UP' });
 
-  renderBoard(playerBoard, player);
-  renderBoard(computerBoard, computer);
+  renderBoard(playerBoard, true);
+  renderBoard(computerBoard, false);
 };
 
 export default initialize;

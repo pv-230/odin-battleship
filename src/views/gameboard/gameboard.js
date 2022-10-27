@@ -5,11 +5,11 @@ import './gameboard.css';
  * @param {object} gb Gameboard object.
  * @param {boolean} showShips True if gameboard should display ship positions
  */
-const renderBoard = (gameboard, player) => {
+const renderBoard = (gameboard, showShips) => {
   let gameboardDOM;
 
   // Selects the appropriate board
-  if (player.isHuman()) {
+  if (showShips) {
     gameboardDOM = document.querySelector('.gameboard_left');
   } else {
     gameboardDOM = document.querySelector('.gameboard_right');
@@ -25,7 +25,7 @@ const renderBoard = (gameboard, player) => {
       tile.setAttribute('data-tile', tileStr);
 
       // Marks ship postions for player's board
-      if (player.isHuman() && gameboard.getTile(tileStr).ship) {
+      if (showShips && gameboard.getTile(tileStr).ship) {
         tile.textContent = 'S';
       }
 
