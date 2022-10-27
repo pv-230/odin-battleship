@@ -5,13 +5,13 @@ import '../../models/Player';
 /**
  *
  * @param {object} gb Gameboard object.
- * @param {object} p Player object.
+ * @param {boolean} showShips True if gameboard should display ship positions
  */
-const displayBoard = (gameboard, showShips) => {
+const displayBoard = (gameboard, player) => {
   let gameboardDOM;
 
   // Selects the appropriate board
-  if (showShips) {
+  if (player.isHuman()) {
     gameboardDOM = document.querySelector('.gameboard_left');
   } else {
     gameboardDOM = document.querySelector('.gameboard_right');
@@ -27,7 +27,7 @@ const displayBoard = (gameboard, showShips) => {
       tile.setAttribute('data-tile', tileStr);
 
       // Marks ship postions for player's board
-      if (showShips && gameboard.getTile(tileStr).ship) {
+      if (player.isHuman() && gameboard.getTile(tileStr).ship) {
         tile.textContent = 'S';
       }
 

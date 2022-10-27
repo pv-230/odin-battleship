@@ -18,5 +18,5 @@ computerBoard.placeShip(3, { origin: 'J5', direction: 'UP' });
 computerBoard.placeShip(3, { origin: 'J7', direction: 'UP' });
 computerBoard.placeShip(2, { origin: 'J9', direction: 'UP' });
 
-displayBoard(playerBoard, true);
-displayBoard(computerBoard, false);
+displayBoard(playerBoard, player);
+displayBoard(computerBoard, computer);

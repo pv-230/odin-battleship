@@ -17,10 +17,14 @@ const Player = (n) => {
   }
 
   /**
-   *
    * @returns The player's name.
    */
   const getName = () => name;
+
+  /**
+   * @returns True if the player object represents a human player.
+   */
+  const isHuman = () => !!n;
 
   /**
    * Allows a player to attack a gameboard at a specific tile or at a random
@@ -47,6 +51,7 @@ const Player = (n) => {
 
   return {
     getName,
+    isHuman,
     attack,
   };
 };
