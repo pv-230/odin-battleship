@@ -49,11 +49,13 @@ const renderBoard = (gameboard, showShips) => {
       // Marks misses
       if (gameboard.getTile(tileStr).status === 1) {
         tile.textContent = 'M';
+        tile.classList.add('gameboard__tile_missed');
       }
 
       // Marks hits
       if (gameboard.getTile(tileStr).status === 2) {
         tile.textContent = 'H';
+        tile.classList.add('gameboard__tile_hit');
       }
 
       tileGrid.appendChild(tile);
@@ -82,18 +84,26 @@ const endTurn = () => {
  * Allows the player to click on enemy tiles to attack them.
  */
 const addAttackHandlers = () => {
+  // Only contains tiles that are valid to attack
   const tiles = [
     ...document.querySelectorAll('.gameboard_right .gameboard__tile'),
-  ];
+  ].filter(
+    (element) =>
+      !(
+        element.classList.contains('gameboard__tile_hit') ||
+        element.classList.contains('gameboard__tile_missed')
+      )
+  );
 
   tiles.forEach((tile) => {
     tile.addEventListener('click', (e) => {
       const tileStr = e.currentTarget.getAttribute('data-tile');
-      // TODO: Add UI message for if the tile has already been attacked
-      player.attack(computerBoard, tileStr);
-      renderBoard(computerBoard, false);
-      addAttackHandlers(computerBoard);
-      endTurn();
+      const attackedTile = player.attack(computerBoard, tileStr);
+      if (attackedTile) {
+        renderBoard(computerBoard, false);
+        addAttackHandlers(computerBoard);
+        endTurn();
+      }
     });
   });
 };
