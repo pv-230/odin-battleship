@@ -13,20 +13,25 @@ let computerBoard = null;
  * @param {boolean} showShips True if gameboard should display ship positions
  */
 const renderBoard = (gameboard, showShips) => {
-  let gameboardDOM;
+  let tileGrid;
 
   // Selects the appropriate board
   if (showShips) {
-    gameboardDOM = document.querySelector('.gameboard_left');
+    tileGrid = document.querySelector(
+      '.gameboard_left > .gameboard__tile-grid'
+    );
   } else {
-    gameboardDOM = document.querySelector('.gameboard_right');
+    tileGrid = document.querySelector(
+      '.gameboard_right > .gameboard__tile-grid'
+    );
   }
 
   // Clears previous rendering
-  while (gameboardDOM.firstChild) {
-    gameboardDOM.removeChild(gameboardDOM.firstChild);
+  while (tileGrid.firstChild) {
+    tileGrid.removeChild(tileGrid.firstChild);
   }
 
+  // Creates the grid tiles
   let charCode = 65;
   for (; charCode <= 74; charCode++) {
     for (let col = 1; col <= 10; col++) {
@@ -51,7 +56,7 @@ const renderBoard = (gameboard, showShips) => {
         tile.textContent = 'H';
       }
 
-      gameboardDOM.appendChild(tile);
+      tileGrid.appendChild(tile);
     }
   }
 };
@@ -78,7 +83,7 @@ const endTurn = () => {
  */
 const addAttackHandlers = () => {
   const tiles = [
-    ...document.querySelectorAll('.gameboard_right > .gameboard__tile'),
+    ...document.querySelectorAll('.gameboard_right .gameboard__tile'),
   ];
 
   tiles.forEach((tile) => {
