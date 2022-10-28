@@ -43,24 +43,38 @@ const renderBoard = (gameboard, showShips) => {
 
       // Marks ship postions for player's board
       if (showShips && gameboard.getTile(tileStr).ship) {
-        tile.textContent = 'S';
+        tile.classList.add('gameboard__tile_ship');
       }
 
       // Marks misses
       if (gameboard.getTile(tileStr).status === 1) {
-        tile.textContent = 'M';
         tile.classList.add('gameboard__tile_missed');
       }
 
       // Marks hits
       if (gameboard.getTile(tileStr).status === 2) {
-        tile.textContent = 'H';
         tile.classList.add('gameboard__tile_hit');
+      }
+
+      // Register event listeners for tiles that have not been clicked
+      if (!showShips && gameboard.getTile(tileStr).status === 0) {
+        tile.addEventListener('click', handleTileClick);
       }
 
       tileGrid.appendChild(tile);
     }
   }
+};
+
+/**
+ * Allows the game to end and prevents any more moves from being made.
+ */
+const endGame = () => {
+  const tiles = [
+    ...document.querySelectorAll('.gameboard_right .gameboard__tile'),
+  ];
+
+  tiles.forEach((tile) => tile.removeEventListener('click', handleTileClick));
 };
 
 /**
@@ -70,6 +84,8 @@ const renderBoard = (gameboard, showShips) => {
 const endTurn = () => {
   if (computerBoard.isDefeated()) {
     console.log(`${player.getName()} wins!`);
+    endGame();
+    return;
   }
 
   computer.attack(playerBoard);
@@ -77,35 +93,21 @@ const endTurn = () => {
 
   if (playerBoard.isDefeated()) {
     console.log(`${computer.getName()} wins!`);
+    endGame();
   }
 };
 
 /**
- * Allows the player to click on enemy tiles to attack them.
+ * Event handler for when the player clicks on a tile to attack.
+ * @param {Event} e
  */
-const addAttackHandlers = () => {
-  // Only contains tiles that are valid to attack
-  const tiles = [
-    ...document.querySelectorAll('.gameboard_right .gameboard__tile'),
-  ].filter(
-    (element) =>
-      !(
-        element.classList.contains('gameboard__tile_hit') ||
-        element.classList.contains('gameboard__tile_missed')
-      )
-  );
-
-  tiles.forEach((tile) => {
-    tile.addEventListener('click', (e) => {
-      const tileStr = e.currentTarget.getAttribute('data-tile');
-      const attackedTile = player.attack(computerBoard, tileStr);
-      if (attackedTile) {
-        renderBoard(computerBoard, false);
-        addAttackHandlers(computerBoard);
-        endTurn();
-      }
-    });
-  });
+const handleTileClick = (e) => {
+  const tileStr = e.currentTarget.getAttribute('data-tile');
+  const attackedTile = player.attack(computerBoard, tileStr);
+  if (attackedTile) {
+    renderBoard(computerBoard, false);
+    endTurn();
+  }
 };
 
 /**
@@ -130,7 +132,6 @@ const initialize = () => {
 
   renderBoard(playerBoard, true);
   renderBoard(computerBoard, false);
-  addAttackHandlers();
 };
 
 export default initialize;
