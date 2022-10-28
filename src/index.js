@@ -1,3 +1,3 @@
-import initialize from './controllers/GameController';
+import { initialize } from './controllers/GameController';
 
 initialize();

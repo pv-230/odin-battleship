@@ -1,4 +1,5 @@
 import './gameboard.css';
+import { endTurn } from '../../controllers/GameController';
 
 /**
  *
@@ -13,6 +14,11 @@ const renderBoard = (gameboard, showShips) => {
     gameboardDOM = document.querySelector('.gameboard_left');
   } else {
     gameboardDOM = document.querySelector('.gameboard_right');
+  }
+
+  // Clears previous rendering
+  while (gameboardDOM.firstChild) {
+    gameboardDOM.removeChild(gameboardDOM.firstChild);
   }
 
   let charCode = 65;
@@ -44,4 +50,26 @@ const renderBoard = (gameboard, showShips) => {
   }
 };
 
-export { renderBoard };
+/**
+ * Allows the player to click on enemy tiles to attack them.
+ * @param {object} player Player object that can attack the board.
+ * @param {object} targetBoard The target board to attack.
+ */
+const addAttackHandlers = (player, targetBoard) => {
+  const tiles = [
+    ...document.querySelectorAll('.gameboard_right > .gameboard__tile'),
+  ];
+
+  tiles.forEach((tile) => {
+    tile.addEventListener('click', (e) => {
+      const tileStr = e.currentTarget.getAttribute('data-tile');
+      // TODO: Add UI message for if the tile has already been attacked
+      player.attack(targetBoard, tileStr);
+      renderBoard(targetBoard, false);
+      addAttackHandlers(player, targetBoard);
+      endTurn();
+    });
+  });
+};
+
+export { renderBoard, addAttackHandlers };

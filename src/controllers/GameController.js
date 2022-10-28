@@ -4,7 +4,7 @@ import Gameboard from '../models/Gameboard';
 
 // Component imports
 import '../views/content/content';
-import { renderBoard } from '../views/gameboard/gameboard';
+import * as GameboardDOM from '../views/gameboard/gameboard';
 
 // Controller variables
 let player = null;
@@ -32,8 +32,28 @@ const initialize = () => {
   computerBoard.placeShip(3, { origin: 'J7', direction: 'UP' });
   computerBoard.placeShip(2, { origin: 'J9', direction: 'UP' });
 
-  renderBoard(playerBoard, true);
-  renderBoard(computerBoard, false);
+  GameboardDOM.renderBoard(playerBoard, true);
+  GameboardDOM.renderBoard(computerBoard, false);
+  GameboardDOM.addAttackHandlers(player, computerBoard);
 };
 
-export default initialize;
+/**
+ * Allows the computer to make its turn against the player when the player's
+ * turn is over.
+ */
+const endTurn = () => {
+  if (computerBoard.isDefeated()) {
+    console.log(`${player.getName()} wins!`);
+    return;
+  }
+
+  computer.attack(playerBoard);
+  GameboardDOM.renderBoard(playerBoard, true);
+
+  if (playerBoard.isDefeated()) {
+    console.log(`${computer.getName()} wins!`);
+    return;
+  }
+};
+
+export { initialize, endTurn };
