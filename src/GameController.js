@@ -67,6 +67,7 @@ const renderBoard = (gameboard, showShips) => {
       // Register event listeners on player board for game start ship placement
       if (!started && showShips) {
         tile.addEventListener('mouseover', showShipPlacement);
+        tile.addEventListener('click', handleShipPlacement);
       }
 
       tileGrid.appendChild(tile);
@@ -139,13 +140,13 @@ const showDirection = () => {
 
   // Highlights the current direction
   let rotator = null;
-  if (selectedShip.direction === 0) {
+  if (selectedShip.direction === 'UP') {
     rotator = document.querySelector('.ship-direction__rotator_up');
-  } else if (selectedShip.direction === 1) {
+  } else if (selectedShip.direction === 'RIGHT') {
     rotator = document.querySelector('.ship-direction__rotator_right');
-  } else if (selectedShip.direction === 2) {
+  } else if (selectedShip.direction === 'DOWN') {
     rotator = document.querySelector('.ship-direction__rotator_down');
-  } else if (selectedShip.direction === 3) {
+  } else if (selectedShip.direction === 'LEFT') {
     rotator = document.querySelector('.ship-direction__rotator_left');
   }
   rotator.style.setProperty('background-color', '#dddddd');
@@ -165,7 +166,7 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     currentOption.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 5, direction: 2 };
+    selectedShip = { length: 5, direction: 'DOWN' };
     showDirection();
   });
 
@@ -177,7 +178,7 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 4, direction: 2 };
+    selectedShip = { length: 4, direction: 'DOWN' };
     showDirection();
   });
 
@@ -189,7 +190,7 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 3, direction: 2 };
+    selectedShip = { length: 3, direction: 'DOWN' };
     showDirection();
   });
 
@@ -201,7 +202,7 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 3, direction: 2 };
+    selectedShip = { length: 3, direction: 'DOWN' };
     showDirection();
   });
 
@@ -213,7 +214,7 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 2, direction: 2 };
+    selectedShip = { length: 2, direction: 'DOWN' };
     showDirection();
   });
 };
@@ -245,7 +246,7 @@ const showShipPlacement = (e) => {
   tile.style.setProperty('background-color', 'aquamarine');
 
   // Up direction
-  if (selectedShip.direction === 0) {
+  if (selectedShip.direction === 'UP') {
     for (let i = 0; i < selectedShip.length - 1; i++) {
       // Decrement the row letter
       tileLetter = String.fromCharCode(tileLetter.charCodeAt(0) - 1);
@@ -257,7 +258,7 @@ const showShipPlacement = (e) => {
   }
 
   // Right direction
-  if (selectedShip.direction === 1) {
+  if (selectedShip.direction === 'RIGHT') {
     for (let i = 0; i < selectedShip.length - 1; i++) {
       // Increment the column number
       tileNum++;
@@ -269,7 +270,7 @@ const showShipPlacement = (e) => {
   }
 
   // Down direction
-  if (selectedShip.direction === 2) {
+  if (selectedShip.direction === 'DOWN') {
     for (let i = 0; i < selectedShip.length - 1; i++) {
       // Increment the row letter
       tileLetter = String.fromCharCode(tileLetter.charCodeAt(0) + 1);
@@ -281,7 +282,7 @@ const showShipPlacement = (e) => {
   }
 
   // Left direction
-  if (selectedShip.direction === 3) {
+  if (selectedShip.direction === 'LEFT') {
     for (let i = 0; i < selectedShip.length - 1; i++) {
       // Decrement the column number
       tileNum--;
@@ -299,9 +300,23 @@ const showShipPlacement = (e) => {
  */
 const handleRotation = (e) => {
   if (!selectedShip) return;
-  const direction = e.currentTarget.getAttribute('data-dir');
-  selectedShip.direction = parseInt(direction, 10);
+  selectedShip.direction = e.currentTarget.getAttribute('data-dir');
   showDirection();
+};
+
+const handleShipPlacement = (e) => {
+  const tileStr = e.currentTarget.getAttribute('data-tile');
+
+  try {
+    playerBoard.placeShip(selectedShip.length, {
+      origin: tileStr,
+      direction: selectedShip.direction,
+    });
+    selectedShip = null;
+    renderBoard(playerBoard, true);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 /**
@@ -323,8 +338,8 @@ const initialize = () => {
     rotator.addEventListener('click', handleRotation);
   });
 
-  const grid = document.querySelector('.gameboard_left .gameboard__tile-grid');
-  grid.addEventListener('mouseleave', resetTileColors);
+  // const grid = document.querySelector('.gameboard_left .gameboard__tile-grid');
+  // grid.addEventListener('mouseleave', resetTileColors);
 };
 
 export default initialize;
