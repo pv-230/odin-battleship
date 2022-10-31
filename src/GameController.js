@@ -121,7 +121,35 @@ const handleTileClick = (e) => {
 /**
  * Starts the game.
  */
-const startGame = () => {};
+const startGame = () => {
+  started = true;
+};
+
+/**
+ * Highlights the currently selected ship direction during placement.
+ */
+const showDirection = () => {
+  if (!selectedShip) return;
+
+  // Clears previously highlighted direction
+  const rotators = [...document.querySelectorAll('.ship-direction__rotator')];
+  rotators.forEach((rotator) => {
+    rotator.style.setProperty('background-color', 'white');
+  });
+
+  // Highlights the current direction
+  let rotator = null;
+  if (selectedShip.direction === 0) {
+    rotator = document.querySelector('.ship-direction__rotator_up');
+  } else if (selectedShip.direction === 1) {
+    rotator = document.querySelector('.ship-direction__rotator_right');
+  } else if (selectedShip.direction === 2) {
+    rotator = document.querySelector('.ship-direction__rotator_down');
+  } else if (selectedShip.direction === 3) {
+    rotator = document.querySelector('.ship-direction__rotator_left');
+  }
+  rotator.style.setProperty('background-color', '#dddddd');
+};
 
 /**
  * Registers event handlers to allow player to select and place ships.
@@ -137,7 +165,8 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     currentOption.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 5, direction: 1 };
+    selectedShip = { length: 5, direction: 2 };
+    showDirection();
   });
 
   // Allows the battleship to be selected for placement
@@ -148,7 +177,8 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 4, direction: 1 };
+    selectedShip = { length: 4, direction: 2 };
+    showDirection();
   });
 
   // Allows the cruiser to be selected for placement
@@ -159,7 +189,8 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 3, direction: 1 };
+    selectedShip = { length: 3, direction: 2 };
+    showDirection();
   });
 
   // Allows the submarine to be selected for placement
@@ -170,7 +201,8 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 3, direction: 1 };
+    selectedShip = { length: 3, direction: 2 };
+    showDirection();
   });
 
   // Allows the destroyer to be selected for placement
@@ -181,7 +213,8 @@ const registerShipSelectors = () => {
     }
     currentOption = e.currentTarget;
     e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 2, direction: 1 };
+    selectedShip = { length: 2, direction: 2 };
+    showDirection();
   });
 };
 
@@ -203,80 +236,72 @@ const resetTileColors = () => {
  */
 const showShipPlacement = (e) => {
   if (!selectedShip) return;
-
   resetTileColors();
 
   let tile = e.currentTarget;
-  let tileStr = e.currentTarget.getAttribute('data-tile');
+  let tileStr = tile.getAttribute('data-tile');
   let tileLetter = tileStr.slice(0, 1).toUpperCase();
   let tileNum = parseInt(tileStr.slice(1), 10);
   tile.style.setProperty('background-color', 'aquamarine');
 
+  // Up direction
   if (selectedShip.direction === 0) {
     for (let i = 0; i < selectedShip.length - 1; i++) {
       // Decrement the row letter
       tileLetter = String.fromCharCode(tileLetter.charCodeAt(0) - 1);
+      if (tileLetter.charCodeAt(0) < 65) break;
       tileStr = `${tileLetter}${tileNum}`;
       tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
-      if (tile) {
-        tile.style.setProperty('background-color', 'aquamarine');
-      }
+      tile.style.setProperty('background-color', 'aquamarine');
     }
   }
 
+  // Right direction
   if (selectedShip.direction === 1) {
-    for (let i = 0; i < selectedShip.length - 1; i++) {
-      // Increment the row letter
-      tileLetter = String.fromCharCode(tileLetter.charCodeAt(0) + 1);
-      tileStr = `${tileLetter}${tileNum}`;
-      tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
-      if (tile) {
-        tile.style.setProperty('background-color', 'aquamarine');
-      }
-    }
-  }
-
-  if (selectedShip.direction === 2) {
-    for (let i = 0; i < selectedShip.length - 1; i++) {
-      // Decrement the column number
-      tileNum--;
-      tileStr = `${tileLetter}${tileNum}`;
-      tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
-      if (tile) {
-        tile.style.setProperty('background-color', 'aquamarine');
-      }
-    }
-  }
-
-  if (selectedShip.direction === 3) {
     for (let i = 0; i < selectedShip.length - 1; i++) {
       // Increment the column number
       tileNum++;
+      if (tileNum > 10) break;
       tileStr = `${tileLetter}${tileNum}`;
       tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
-      if (tile) {
-        tile.style.setProperty('background-color', 'aquamarine');
-      }
+      tile.style.setProperty('background-color', 'aquamarine');
+    }
+  }
+
+  // Down direction
+  if (selectedShip.direction === 2) {
+    for (let i = 0; i < selectedShip.length - 1; i++) {
+      // Increment the row letter
+      tileLetter = String.fromCharCode(tileLetter.charCodeAt(0) + 1);
+      if (tileLetter.charCodeAt(0) > 74) break;
+      tileStr = `${tileLetter}${tileNum}`;
+      tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
+      tile.style.setProperty('background-color', 'aquamarine');
+    }
+  }
+
+  // Left direction
+  if (selectedShip.direction === 3) {
+    for (let i = 0; i < selectedShip.length - 1; i++) {
+      // Decrement the column number
+      tileNum--;
+      if (tileNum < 1) break;
+      tileStr = `${tileLetter}${tileNum}`;
+      tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
+      tile.style.setProperty('background-color', 'aquamarine');
     }
   }
 };
 
-const rotatePlacement = (e) => {
-  // if (!selectedShip) return;
-  // e.preventDefault();
-  // if (e.deltaY < 0) {
-  //   selectedShip = {
-  //     ...selectedShip,
-  //     direction: Math.abs((selectedShip.direction + 1) % 4),
-  //   };
-  // }
-  // if (e.deltaY > 0) {
-  //   selectedShip = {
-  //     ...selectedShip,
-  //     direction: Math.abs((selectedShip.direction - 1) % 4),
-  //   };
-  // }
-  // console.log(selectedShip);
+/**
+ * Event handler to allow player to rotate a ship's direction during placement.
+ * @param {Event} e
+ */
+const handleRotation = (e) => {
+  if (!selectedShip) return;
+  const direction = e.currentTarget.getAttribute('data-dir');
+  selectedShip.direction = parseInt(direction, 10);
+  showDirection();
 };
 
 /**
@@ -292,9 +317,14 @@ const initialize = () => {
   renderBoard(computerBoard, false);
   registerShipSelectors();
 
+  // Registers event handlers for ship rotation buttons
+  const rotators = [...document.querySelectorAll('.ship-direction__rotator')];
+  rotators.forEach((rotator) => {
+    rotator.addEventListener('click', handleRotation);
+  });
+
   const grid = document.querySelector('.gameboard_left .gameboard__tile-grid');
   grid.addEventListener('mouseleave', resetTileColors);
-  grid.addEventListener('wheel', rotatePlacement);
 };
 
 export default initialize;

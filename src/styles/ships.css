@@ -1,14 +1,82 @@
+/* Ships list */
+
+.player-ship-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-start;
+  gap: 20px;
+  width: 125px;
+}
+
 .player-ships {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-self: flex-start;
   gap: 5px;
   padding: 5px;
   border: 1px solid black;
+  width: 100%;
 }
 
 .player-ships > div:hover {
   background-color: #dddddd;
   cursor: pointer;
+}
+
+/* Ship direction rotation */
+
+.ship-direction {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 5px;
+  border: 1px solid black;
+  padding: 5px;
+  width: 100%;
+}
+
+.ship-direction__rotator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.ship-direction__rotator:hover {
+  background-color: #dddddd;
+  cursor: pointer;
+}
+
+.ship-direction__rotator.selected {
+  background-color: #dddddd;
+}
+
+.ship-direction__title {
+  grid-column: 1 / 4;
+  grid-row: 1 / 2;
+}
+
+.ship-direction__rotator_up {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+}
+
+.ship-direction__rotator_right {
+  grid-column: 3 / 4;
+  grid-row: 3 / 4;
+}
+
+.ship-direction__rotator_down {
+  grid-column: 2 / 3;
+  grid-row: 3 / 4;
+}
+
+.ship-direction__rotator_left {
+  grid-column: 1 / 2;
+  grid-row: 3 / 4;
 }
