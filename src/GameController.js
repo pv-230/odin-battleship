@@ -1,7 +1,10 @@
 import Player from './models/Player';
 import Gameboard from './models/Gameboard';
 
-// Controller variables
+// ============================================================================
+//  Controller variables
+// ============================================================================
+
 let player = null;
 let computer = null;
 let playerBoard = null;
@@ -9,6 +12,23 @@ let computerBoard = null;
 let started = false;
 let selectedShip = null;
 let playerShips = [];
+
+// ============================================================================
+//  Gameboard functions
+// ============================================================================
+
+/**
+ * Event handler for when the player clicks on a tile to attack.
+ * @param {Event} e
+ */
+const handlePlayerAttack = (e) => {
+  const tileStr = e.currentTarget.getAttribute('data-tile');
+  const attackedTile = player.attack(computerBoard, tileStr);
+  if (attackedTile) {
+    renderBoard(computerBoard, false);
+    endTurn();
+  }
+};
 
 /**
  *
@@ -74,171 +94,6 @@ const renderBoard = (gameboard, showShips) => {
       tileGrid.appendChild(tile);
     }
   }
-};
-
-/**
- * Allows the game to end and prevents any more moves from being made.
- */
-const endGame = () => {
-  const tiles = [
-    ...document.querySelectorAll('.gameboard_right .gameboard__tile'),
-  ];
-
-  tiles.forEach((tile) =>
-    tile.removeEventListener('click', handlePlayerAttack)
-  );
-};
-
-/**
- * Allows the computer to make its turn against the player when the player's
- * turn is over.
- */
-const endTurn = () => {
-  if (computerBoard.isDefeated()) {
-    console.log(`${player.getName()} wins!`);
-    endGame();
-    return;
-  }
-
-  computer.attack(playerBoard);
-  renderBoard(playerBoard, true);
-
-  if (playerBoard.isDefeated()) {
-    console.log(`${computer.getName()} wins!`);
-    endGame();
-  }
-};
-
-/**
- * Event handler for when the player clicks on a tile to attack.
- * @param {Event} e
- */
-const handlePlayerAttack = (e) => {
-  const tileStr = e.currentTarget.getAttribute('data-tile');
-  const attackedTile = player.attack(computerBoard, tileStr);
-  if (attackedTile) {
-    renderBoard(computerBoard, false);
-    endTurn();
-  }
-};
-
-/**
- * Starts the game.
- */
-// const startGame = () => {
-//   started = true;
-// };
-
-/**
- * Clears the currently highlighted direction during ship placement.
- */
-const clearDirection = () => {
-  // Clears previously highlighted direction
-  const rotators = [...document.querySelectorAll('.ship-direction__rotator')];
-  rotators.forEach((rotator) => {
-    rotator.style.setProperty('background-color', 'white');
-  });
-};
-
-/**
- * Highlights the currently selected ship direction during placement.
- */
-const showDirection = () => {
-  if (!selectedShip) return;
-  clearDirection();
-
-  // Highlights the current direction
-  let rotator = null;
-  if (selectedShip.direction === 'UP') {
-    rotator = document.querySelector('.ship-direction__rotator_up');
-  } else if (selectedShip.direction === 'RIGHT') {
-    rotator = document.querySelector('.ship-direction__rotator_right');
-  } else if (selectedShip.direction === 'DOWN') {
-    rotator = document.querySelector('.ship-direction__rotator_down');
-  } else if (selectedShip.direction === 'LEFT') {
-    rotator = document.querySelector('.ship-direction__rotator_left');
-  }
-  rotator.style.setProperty('background-color', '#dddddd');
-};
-
-const updatePlayerShipStatus = () => {
-  const shipElements = [...document.querySelectorAll('.player-ships__ship')];
-  shipElements.forEach((shipElement) => {
-    shipElement.style.setProperty('background-color', 'white');
-  });
-};
-
-/**
- * Registers event handlers to allow player to select and place ships.
- */
-const registerShipSelectors = () => {
-  let currentOption = null;
-
-  // Allows the carrier to be selected for placement
-  const carrierOption = document.querySelector('.player-ships__ship_carrier');
-  carrierOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    currentOption.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 5, direction: 'DOWN' };
-    showDirection();
-  });
-
-  // Allows the battleship to be selected for placement
-  const battleshipOption = document.querySelector(
-    '.player-ships__ship_battleship'
-  );
-  battleshipOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 4, direction: 'DOWN' };
-    showDirection();
-  });
-
-  // Allows the cruiser to be selected for placement
-  const cruiserOption = document.querySelector('.player-ships__ship_cruiser');
-  cruiserOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 3, direction: 'DOWN' };
-    showDirection();
-  });
-
-  // Allows the submarine to be selected for placement
-  const submarineOption = document.querySelector(
-    '.player-ships__ship_submarine'
-  );
-  submarineOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 3, direction: 'DOWN' };
-    showDirection();
-  });
-
-  // Allows the destroyer to be selected for placement
-  const destroyerOption = document.querySelector(
-    '.player-ships__ship_destroyer'
-  );
-  destroyerOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { length: 2, direction: 'DOWN' };
-    showDirection();
-  });
 };
 
 /**
@@ -317,6 +172,191 @@ const showShipPlacement = (e) => {
 };
 
 /**
+ * Allows a player to place their selected ship before game start.
+ */
+const handleShipPlacement = (e) => {
+  const tileStr = e.currentTarget.getAttribute('data-tile');
+
+  try {
+    const ship = playerBoard.placeShip(selectedShip.length, {
+      origin: tileStr,
+      direction: selectedShip.direction,
+    });
+    playerShips.push({ type: selectedShip.type, ref: ship });
+    selectedShip = null;
+    updatePlayerShipStatus();
+    clearDirection();
+    renderBoard(playerBoard, true);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// ============================================================================
+//  Ship status/selection functions
+// ============================================================================
+
+const updatePlayerShipStatus = () => {
+  const shipElements = [...document.querySelectorAll('.player-ships__ship')];
+  shipElements.forEach((shipElement) => {
+    shipElement.style.setProperty('background-color', 'white');
+  });
+};
+
+/**
+ * Registers event handlers to allow player to select and place ships.
+ */
+const registerShipSelectors = () => {
+  let currentOption = null;
+
+  // Allows the carrier to be selected for placement
+  const carrierOption = document.querySelector('.player-ships__ship_carrier');
+  carrierOption.addEventListener('click', (e) => {
+    if (currentOption) {
+      currentOption.style.setProperty('background-color', 'white');
+    }
+    currentOption = e.currentTarget;
+    currentOption.style.setProperty('background-color', 'aquamarine');
+    selectedShip = { type: 'carrier', length: 5, direction: 'DOWN' };
+    showDirection();
+  });
+
+  // Allows the battleship to be selected for placement
+  const battleshipOption = document.querySelector(
+    '.player-ships__ship_battleship'
+  );
+  battleshipOption.addEventListener('click', (e) => {
+    if (currentOption) {
+      currentOption.style.setProperty('background-color', 'white');
+    }
+    currentOption = e.currentTarget;
+    e.currentTarget.style.setProperty('background-color', 'aquamarine');
+    selectedShip = { type: 'battleship', length: 4, direction: 'DOWN' };
+    showDirection();
+  });
+
+  // Allows the cruiser to be selected for placement
+  const cruiserOption = document.querySelector('.player-ships__ship_cruiser');
+  cruiserOption.addEventListener('click', (e) => {
+    if (currentOption) {
+      currentOption.style.setProperty('background-color', 'white');
+    }
+    currentOption = e.currentTarget;
+    e.currentTarget.style.setProperty('background-color', 'aquamarine');
+    selectedShip = { type: 'cruiser', length: 3, direction: 'DOWN' };
+    showDirection();
+  });
+
+  // Allows the submarine to be selected for placement
+  const submarineOption = document.querySelector(
+    '.player-ships__ship_submarine'
+  );
+  submarineOption.addEventListener('click', (e) => {
+    if (currentOption) {
+      currentOption.style.setProperty('background-color', 'white');
+    }
+    currentOption = e.currentTarget;
+    e.currentTarget.style.setProperty('background-color', 'aquamarine');
+    selectedShip = { type: 'submarine', length: 3, direction: 'DOWN' };
+    showDirection();
+  });
+
+  // Allows the destroyer to be selected for placement
+  const destroyerOption = document.querySelector(
+    '.player-ships__ship_destroyer'
+  );
+  destroyerOption.addEventListener('click', (e) => {
+    if (currentOption) {
+      currentOption.style.setProperty('background-color', 'white');
+    }
+    currentOption = e.currentTarget;
+    e.currentTarget.style.setProperty('background-color', 'aquamarine');
+    selectedShip = { type: 'destroyer', length: 2, direction: 'DOWN' };
+    showDirection();
+  });
+};
+
+// ============================================================================
+//  Game flow functions
+// ============================================================================
+
+/**
+ * Starts the game.
+ */
+// const startGame = () => {
+//   started = true;
+// };
+
+/**
+ * Allows the game to end and prevents any more moves from being made.
+ */
+const endGame = () => {
+  const tiles = [
+    ...document.querySelectorAll('.gameboard_right .gameboard__tile'),
+  ];
+
+  tiles.forEach((tile) =>
+    tile.removeEventListener('click', handlePlayerAttack)
+  );
+};
+
+/**
+ * Allows the computer to make its turn against the player when the player's
+ * turn is over.
+ */
+const endTurn = () => {
+  if (computerBoard.isDefeated()) {
+    console.log(`${player.getName()} wins!`);
+    endGame();
+    return;
+  }
+
+  computer.attack(playerBoard);
+  renderBoard(playerBoard, true);
+
+  if (playerBoard.isDefeated()) {
+    console.log(`${computer.getName()} wins!`);
+    endGame();
+  }
+};
+
+// ============================================================================
+//  Ship rotation functions
+// ============================================================================
+
+/**
+ * Clears the currently highlighted direction during ship placement.
+ */
+const clearDirection = () => {
+  // Clears previously highlighted direction
+  const rotators = [...document.querySelectorAll('.ship-direction__rotator')];
+  rotators.forEach((rotator) => {
+    rotator.style.setProperty('background-color', 'white');
+  });
+};
+
+/**
+ * Highlights the currently selected ship direction during placement.
+ */
+const showDirection = () => {
+  if (!selectedShip) return;
+  clearDirection();
+
+  // Highlights the current direction
+  let rotator = null;
+  if (selectedShip.direction === 'UP') {
+    rotator = document.querySelector('.ship-direction__rotator_up');
+  } else if (selectedShip.direction === 'RIGHT') {
+    rotator = document.querySelector('.ship-direction__rotator_right');
+  } else if (selectedShip.direction === 'DOWN') {
+    rotator = document.querySelector('.ship-direction__rotator_down');
+  } else if (selectedShip.direction === 'LEFT') {
+    rotator = document.querySelector('.ship-direction__rotator_left');
+  }
+  rotator.style.setProperty('background-color', '#dddddd');
+};
+
+/**
  * Event handler to allow player to rotate a ship's direction during placement.
  * @param {Event} e
  */
@@ -326,25 +366,9 @@ const handleRotation = (e) => {
   showDirection();
 };
 
-/**
- * Allows a player to place their selected ship before game start.
- */
-const handleShipPlacement = (e) => {
-  const tileStr = e.currentTarget.getAttribute('data-tile');
-
-  try {
-    playerBoard.placeShip(selectedShip.length, {
-      origin: tileStr,
-      direction: selectedShip.direction,
-    });
-    selectedShip = null;
-    updatePlayerShipStatus();
-    clearDirection();
-    renderBoard(playerBoard, true);
-  } catch (err) {
-    console.error(err);
-  }
-};
+// ============================================================================
+//  Exported functions
+// ============================================================================
 
 /**
  * Initializes the start of the game.
