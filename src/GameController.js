@@ -11,7 +11,7 @@ let playerBoard = null;
 let computerBoard = null;
 let started = false;
 let selectedShip = null;
-let playerShips = [];
+const playerShips = [];
 
 // ============================================================================
 //  Gameboard functions
@@ -206,6 +206,9 @@ const handleShipPlacement = (e) => {
 //  Ship status/selection functions
 // ============================================================================
 
+/**
+ * Colors the ships in the ship status window according to their status.
+ */
 const updatePlayerShipStatus = () => {
   const shipElements = [...document.querySelectorAll('.player-ships__ship')];
 
@@ -231,6 +234,9 @@ const updatePlayerShipStatus = () => {
   });
 };
 
+/**
+ * Event handler for selecting a ship to place on the gameboard.
+ */
 const handleShipSelection = (e) => {
   const shipElements = [...document.querySelectorAll('.player-ships__ship')];
   const shipType = e.currentTarget.getAttribute('data-ship');
@@ -378,8 +384,8 @@ const initialize = () => {
     rotator.addEventListener('click', handleRotation);
   });
 
-  // const grid = document.querySelector('.gameboard_left .gameboard__tile-grid');
-  // grid.addEventListener('mouseleave', resetTileColors);
+  const grid = document.querySelector('.gameboard_left .gameboard__tile-grid');
+  grid.addEventListener('mouseleave', resetTileColors);
 };
 
 export default initialize;

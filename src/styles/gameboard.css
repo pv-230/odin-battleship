@@ -91,7 +91,7 @@
   height: 100%;
 }
 
-.start-window__dialog {
+.start-dialog {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;

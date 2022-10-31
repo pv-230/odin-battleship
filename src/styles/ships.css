@@ -23,7 +23,7 @@
   border: 1px solid black;
 }
 
-.player-ships__ship:hover {
+.player-ships__ship:hover:not(.player-ships__ship_placed) {
   background-color: #dddddd;
   cursor: pointer;
 }
