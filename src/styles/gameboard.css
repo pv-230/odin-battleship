@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: repeat(11, 1fr);
-  border: 1px solid black;
+  border: 2px solid black;
   width: min(80vw, 400px);
   height: min(80vw, 400px);
 }
@@ -45,6 +45,10 @@
 
 .gameboard__tile_hit {
   background-color: red;
+}
+
+.gameboard__tile_placement {
+  background-color: aquamarine;
 }
 
 /* Labels */

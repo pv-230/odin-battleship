@@ -104,7 +104,7 @@ const resetTileColors = () => {
     ...document.querySelectorAll('.gameboard_left .gameboard__tile'),
   ];
   tiles.forEach((tile) => {
-    tile.style.setProperty('background-color', 'white');
+    tile.classList.remove('gameboard__tile_placement');
   });
 };
 
@@ -120,7 +120,7 @@ const showShipPlacement = (e) => {
   let tileStr = tile.getAttribute('data-tile');
   let tileLetter = tileStr.slice(0, 1).toUpperCase();
   let tileNum = parseInt(tileStr.slice(1), 10);
-  tile.style.setProperty('background-color', 'aquamarine');
+  tile.classList.add('gameboard__tile_placement');
 
   // Up direction
   if (selectedShip.direction === 'UP') {
@@ -130,7 +130,7 @@ const showShipPlacement = (e) => {
       if (tileLetter.charCodeAt(0) < 65) break;
       tileStr = `${tileLetter}${tileNum}`;
       tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
-      tile.style.setProperty('background-color', 'aquamarine');
+      tile.classList.add('gameboard__tile_placement');
     }
   }
 
@@ -142,7 +142,7 @@ const showShipPlacement = (e) => {
       if (tileNum > 10) break;
       tileStr = `${tileLetter}${tileNum}`;
       tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
-      tile.style.setProperty('background-color', 'aquamarine');
+      tile.classList.add('gameboard__tile_placement');
     }
   }
 
@@ -154,7 +154,7 @@ const showShipPlacement = (e) => {
       if (tileLetter.charCodeAt(0) > 74) break;
       tileStr = `${tileLetter}${tileNum}`;
       tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
-      tile.style.setProperty('background-color', 'aquamarine');
+      tile.classList.add('gameboard__tile_placement');
     }
   }
 
@@ -166,7 +166,7 @@ const showShipPlacement = (e) => {
       if (tileNum < 1) break;
       tileStr = `${tileLetter}${tileNum}`;
       tile = document.querySelector(`.gameboard__tile_pos_${tileStr}`);
-      tile.style.setProperty('background-color', 'aquamarine');
+      tile.classList.add('gameboard__tile_placement');
     }
   }
 };
@@ -175,14 +175,24 @@ const showShipPlacement = (e) => {
  * Allows a player to place their selected ship before game start.
  */
 const handleShipPlacement = (e) => {
-  const tileStr = e.currentTarget.getAttribute('data-tile');
+  if (!selectedShip) return;
 
   try {
+    const tileStr = e.currentTarget.getAttribute('data-tile');
     const ship = playerBoard.placeShip(selectedShip.length, {
       origin: tileStr,
       direction: selectedShip.direction,
     });
+
     playerShips.push({ type: selectedShip.type, ref: ship });
+
+    // Updates the ship element's attribute
+    const shipElement = document.querySelector(
+      `.player-ships__ship_${selectedShip.type}`
+    );
+    shipElement.removeEventListener('click', handleShipSelection);
+    shipElement.classList.add('player-ships__ship_placed');
+
     selectedShip = null;
     updatePlayerShipStatus();
     clearDirection();
@@ -198,82 +208,56 @@ const handleShipPlacement = (e) => {
 
 const updatePlayerShipStatus = () => {
   const shipElements = [...document.querySelectorAll('.player-ships__ship')];
+
+  // Clear any highlighted ships
   shipElements.forEach((shipElement) => {
-    shipElement.style.setProperty('background-color', 'white');
+    shipElement.classList.remove('player-ships__ship_selected');
+
+    // Determines if current ship element matches with an existing ship
+    const shipType = shipElement.getAttribute('data-ship');
+    const matchingShip = playerShips.find((ship) => ship.type === shipType);
+    if (!matchingShip) return;
+
+    // Updates the ship status color
+    if (matchingShip.ref.isSunk()) {
+      shipElement.classList.remove('player-ships__ship_damaged');
+      shipElement.classList.add('player-ships__ship_sunk');
+    } else if (matchingShip.ref.getHits() > 0) {
+      shipElement.classList.remove('player-ships__ship_undamaged');
+      shipElement.classList.add('player-ships__ship_damaged');
+    } else {
+      shipElement.classList.add('player-ships__ship_undamaged');
+    }
   });
 };
 
-/**
- * Registers event handlers to allow player to select and place ships.
- */
-const registerShipSelectors = () => {
-  let currentOption = null;
+const handleShipSelection = (e) => {
+  const shipElements = [...document.querySelectorAll('.player-ships__ship')];
+  const shipType = e.currentTarget.getAttribute('data-ship');
 
-  // Allows the carrier to be selected for placement
-  const carrierOption = document.querySelector('.player-ships__ship_carrier');
-  carrierOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    currentOption.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { type: 'carrier', length: 5, direction: 'DOWN' };
-    showDirection();
+  // Clears any highlighted ships
+  shipElements.forEach((shipElement) => {
+    shipElement.classList.remove('player-ships__ship_selected');
   });
 
-  // Allows the battleship to be selected for placement
-  const battleshipOption = document.querySelector(
-    '.player-ships__ship_battleship'
-  );
-  battleshipOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { type: 'battleship', length: 4, direction: 'DOWN' };
-    showDirection();
-  });
+  // Highlights the currently selected ship
+  e.currentTarget.classList.add('player-ships__ship_selected');
 
-  // Allows the cruiser to be selected for placement
-  const cruiserOption = document.querySelector('.player-ships__ship_cruiser');
-  cruiserOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { type: 'cruiser', length: 3, direction: 'DOWN' };
-    showDirection();
-  });
+  if (shipType === 'carrier') {
+    selectedShip = { type: shipType, length: 5, direction: 'DOWN' };
+  } else if (shipType === 'battleship') {
+    selectedShip = { type: shipType, length: 4, direction: 'DOWN' };
+  } else if (shipType === 'cruiser') {
+    selectedShip = { type: shipType, length: 3, direction: 'DOWN' };
+  } else if (shipType === 'submarine') {
+    selectedShip = { type: shipType, length: 3, direction: 'DOWN' };
+  } else if (shipType === 'destroyer') {
+    selectedShip = { type: shipType, length: 2, direction: 'DOWN' };
+  } else {
+    throw new Error('Invalid ship type attribute');
+  }
 
-  // Allows the submarine to be selected for placement
-  const submarineOption = document.querySelector(
-    '.player-ships__ship_submarine'
-  );
-  submarineOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { type: 'submarine', length: 3, direction: 'DOWN' };
-    showDirection();
-  });
-
-  // Allows the destroyer to be selected for placement
-  const destroyerOption = document.querySelector(
-    '.player-ships__ship_destroyer'
-  );
-  destroyerOption.addEventListener('click', (e) => {
-    if (currentOption) {
-      currentOption.style.setProperty('background-color', 'white');
-    }
-    currentOption = e.currentTarget;
-    e.currentTarget.style.setProperty('background-color', 'aquamarine');
-    selectedShip = { type: 'destroyer', length: 2, direction: 'DOWN' };
-    showDirection();
-  });
+  showDirection();
 };
 
 // ============================================================================
@@ -331,7 +315,7 @@ const clearDirection = () => {
   // Clears previously highlighted direction
   const rotators = [...document.querySelectorAll('.ship-direction__rotator')];
   rotators.forEach((rotator) => {
-    rotator.style.setProperty('background-color', 'white');
+    rotator.classList.remove('ship-direction__rotator_selected');
   });
 };
 
@@ -353,7 +337,7 @@ const showDirection = () => {
   } else if (selectedShip.direction === 'LEFT') {
     rotator = document.querySelector('.ship-direction__rotator_left');
   }
-  rotator.style.setProperty('background-color', '#dddddd');
+  rotator.classList.add('ship-direction__rotator_selected');
 };
 
 /**
@@ -381,7 +365,12 @@ const initialize = () => {
 
   renderBoard(playerBoard, true);
   renderBoard(computerBoard, false);
-  registerShipSelectors();
+
+  // Registers event handlers for ship selection list
+  const shipElements = [...document.querySelectorAll('.player-ships__ship')];
+  shipElements.forEach((shipElement) =>
+    shipElement.addEventListener('click', handleShipSelection)
+  );
 
   // Registers event handlers for ship rotation buttons
   const rotators = [...document.querySelectorAll('.ship-direction__rotator')];
