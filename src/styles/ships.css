@@ -25,6 +25,11 @@
   cursor: pointer;
 }
 
+.player-ships__ship {
+  padding: 5px;
+  border-radius: 5px;
+}
+
 /* Ship direction rotation */
 
 .ship-direction {
