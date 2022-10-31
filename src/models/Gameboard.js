@@ -122,11 +122,28 @@ const Gameboard = () => {
     return true;
   };
 
+  /**
+   * @returns An array containing status of each ship.
+   */
+  const getShipStatus = () => {
+    const shipStatus = [];
+
+    ships.forEach((ship) => {
+      shipStatus.push({
+        length: ship.getLength(),
+        hits: ship.getHits(),
+      });
+    });
+
+    return shipStatus;
+  };
+
   return {
     placeShip,
     getTile,
     receiveAttack,
     isDefeated,
+    getShipStatus,
   };
 };
 
