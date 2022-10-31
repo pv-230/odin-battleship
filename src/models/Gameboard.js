@@ -1,3 +1,4 @@
+const cloneDeep = require('lodash.clonedeep');
 const Ship = require('./Ship');
 
 /**
@@ -33,7 +34,7 @@ const Gameboard = () => {
   const placeShip = (len, pos) => {
     const ship = Ship(len, pos);
     const shipDirection = ship.getPosition().direction;
-    const gridCopy = [...grid];
+    const gridCopy = cloneDeep(grid);
     const gridCoord = toGridCoord(ship.getPosition().origin);
     const err = 'Ship cannot be placed on occupied tiles';
 

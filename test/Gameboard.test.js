@@ -155,4 +155,12 @@ describe('Gameboard', () => {
     });
     expect(gameboard.getTile('A1').ship).toBe(ship);
   });
+
+  test('Grid does not save ships that fail to place', () => {
+    gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'A2', direction: 'LEFT' })
+    ).toThrowError('Ship cannot be placed on occupied tiles');
+    expect(gameboard.getTile('A2').ship).toBe(null);
+  });
 });
