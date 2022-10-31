@@ -145,4 +145,14 @@ describe('Gameboard', () => {
     expect(gameboard.receiveAttack('A1')).toBe(false);
     expect(gameboard.getTile('A1').ship.getHits()).toBe(1);
   });
+
+  test('Placing ship returns reference to new ship', () => {
+    const ship = gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
+    expect(ship.getLength()).toBe(2);
+    expect(ship.getPosition()).toMatchObject({
+      origin: 'A1',
+      direction: 'DOWN',
+    });
+    expect(gameboard.getTile('A1').ship).toBe(ship);
+  });
 });

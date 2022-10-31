@@ -70,6 +70,7 @@ const Gameboard = () => {
     }
     ships.push(ship);
     grid = gridCopy;
+    return ship;
   };
 
   /**

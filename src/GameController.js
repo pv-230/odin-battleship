@@ -326,6 +326,9 @@ const handleRotation = (e) => {
   showDirection();
 };
 
+/**
+ * Allows a player to place their selected ship before game start.
+ */
 const handleShipPlacement = (e) => {
   const tileStr = e.currentTarget.getAttribute('data-tile');
 
