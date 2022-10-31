@@ -6,6 +6,7 @@ let player = null;
 let computer = null;
 let playerBoard = null;
 let computerBoard = null;
+let started = false;
 
 /**
  *
@@ -57,7 +58,7 @@ const renderBoard = (gameboard, showShips) => {
       }
 
       // Register event listeners for tiles that have not been clicked
-      if (!showShips && gameboard.getTile(tileStr).status === 0) {
+      if (started && !showShips && gameboard.getTile(tileStr).status === 0) {
         tile.addEventListener('click', handleTileClick);
       }
 
@@ -111,6 +112,11 @@ const handleTileClick = (e) => {
 };
 
 /**
+ * Starts the game.
+ */
+const startGame = () => {};
+
+/**
  * Initializes the start of the game.
  */
 const initialize = () => {
@@ -118,17 +124,6 @@ const initialize = () => {
   computer = Player();
   playerBoard = Gameboard();
   computerBoard = Gameboard();
-
-  playerBoard.placeShip(5, { origin: 'A1', direction: 'DOWN' });
-  playerBoard.placeShip(4, { origin: 'A3', direction: 'DOWN' });
-  playerBoard.placeShip(3, { origin: 'A5', direction: 'DOWN' });
-  playerBoard.placeShip(3, { origin: 'A7', direction: 'DOWN' });
-  playerBoard.placeShip(2, { origin: 'A9', direction: 'DOWN' });
-  computerBoard.placeShip(5, { origin: 'J1', direction: 'UP' });
-  computerBoard.placeShip(4, { origin: 'J3', direction: 'UP' });
-  computerBoard.placeShip(3, { origin: 'J5', direction: 'UP' });
-  computerBoard.placeShip(3, { origin: 'J7', direction: 'UP' });
-  computerBoard.placeShip(2, { origin: 'J9', direction: 'UP' });
 
   renderBoard(playerBoard, true);
   renderBoard(computerBoard, false);

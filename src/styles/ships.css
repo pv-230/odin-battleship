@@ -1,0 +1,14 @@
+.player-ships {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: flex-start;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid black;
+}
+
+.player-ships > div:hover {
+  background-color: #dddddd;
+  cursor: pointer;
+}
