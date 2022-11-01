@@ -186,14 +186,20 @@ const handleShipPlacement = (e) => {
 
     playerShips.push({ type: selectedShip.type, ref: ship });
 
-    // Updates the ship element's attribute
+    // Updates the selected ship element
     const shipElement = document.querySelector(
       `.player-ships__ship_${selectedShip.type}`
     );
     shipElement.removeEventListener('click', handleShipSelection);
     shipElement.classList.add('player-ships__ship_placed');
-
     selectedShip = null;
+
+    // Hides ship direction controls
+    const shipDirection = document.querySelector('.ship-direction');
+    shipDirection.classList.add('hidden');
+
+    // Updates other views
+    updateShipCounter();
     updatePlayerShipStatus();
     clearDirection();
     renderBoard(playerBoard, true);
@@ -273,9 +279,19 @@ const handleShipSelection = (e) => {
 /**
  * Starts the game.
  */
-// const startGame = () => {
-//   started = true;
-// };
+const startGame = () => {
+  started = true;
+
+  // Hides the start window
+  const startWindow = document.querySelector('.start-window');
+  startWindow.classList.add('hidden');
+
+  // Unblurs the right gameboard
+  const rightGameboard = document.querySelector('.gameboard_right');
+  rightGameboard.classList.remove('gameboard_blurred');
+
+  renderBoard(computerBoard, false);
+};
 
 /**
  * Allows the game to end and prevents any more moves from being made.
@@ -303,11 +319,30 @@ const endTurn = () => {
 
   computer.attack(playerBoard);
   renderBoard(playerBoard, true);
+  updatePlayerShipStatus();
 
   if (playerBoard.isDefeated()) {
     console.log(`${computer.getName()} wins!`);
     endGame();
   }
+};
+
+/**
+ * Checks if all ships are placed and starts the game if so. Otherwise, the
+ * placed ships counter text is updated.
+ */
+const updateShipCounter = () => {
+  const count = playerShips.length;
+
+  if (count === 5) {
+    // Enables start button
+    const startBtn = document.querySelector('.start-dialog__btn');
+    startBtn.removeAttribute('disabled');
+  }
+
+  // Updates the counter text
+  const counterElement = document.querySelector('.start-dialog__ship-counter');
+  counterElement.textContent = `${playerShips.length}/5 ships placed`;
 };
 
 // ============================================================================
@@ -330,6 +365,10 @@ const clearDirection = () => {
  */
 const showDirection = () => {
   if (!selectedShip) return;
+
+  // Show the ship direction controlls
+  const shipDirection = document.querySelector('.ship-direction');
+  shipDirection.classList.remove('hidden');
   clearDirection();
 
   // Highlights the current direction
@@ -372,20 +411,26 @@ const initialize = () => {
   renderBoard(playerBoard, true);
   renderBoard(computerBoard, false);
 
-  // Registers event handlers for ship selection list
+  // Registers event listener for ship selection list
   const shipElements = [...document.querySelectorAll('.player-ships__ship')];
   shipElements.forEach((shipElement) =>
     shipElement.addEventListener('click', handleShipSelection)
   );
 
-  // Registers event handlers for ship rotation buttons
+  // Registers event listener for ship rotation buttons
   const rotators = [...document.querySelectorAll('.ship-direction__rotator')];
   rotators.forEach((rotator) => {
     rotator.addEventListener('click', handleRotation);
   });
 
+  // Registers event listener for clearing any ship placement tile colors
+  // when leaving the grid
   const grid = document.querySelector('.gameboard_left .gameboard__tile-grid');
   grid.addEventListener('mouseleave', resetTileColors);
+
+  // Registers event listener for the start button
+  const startButton = document.querySelector('.start-dialog__btn');
+  startButton.addEventListener('click', startGame);
 };
 
 export default initialize;

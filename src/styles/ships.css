@@ -23,7 +23,7 @@
   border: 1px solid black;
 }
 
-.player-ships__ship:hover:not(.player-ships__ship_placed) {
+.player-ships__ship:hover:not(.player-ships__ship_placed, .player-ships__ship_selected) {
   background-color: #dddddd;
   cursor: pointer;
 }
@@ -98,4 +98,8 @@
 .ship-direction__rotator_left {
   grid-column: 1 / 2;
   grid-row: 3 / 4;
+}
+
+.ship-direction.hidden {
+  display: none;
 }

@@ -102,3 +102,7 @@
   height: 40%;
   border-radius: 5px;
 }
+
+.start-window.hidden {
+  display: none;
+}
