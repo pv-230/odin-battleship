@@ -192,6 +192,7 @@ const handleShipPlacement = (e) => {
       `.player-ships__ship_${selectedShip.type}`
     );
     shipElement.removeEventListener('click', handleShipSelection);
+    shipElement.addEventListener('click', handleShipRemove);
     shipElement.classList.add('player-ships__ship_placed');
     selectedShip = null;
 
@@ -243,6 +244,7 @@ const updatePlayerShipStatus = () => {
 
 /**
  * Event handler for selecting a ship to place on the gameboard.
+ * @param {Event} e
  */
 const handleShipSelection = (e) => {
   const shipElements = [...document.querySelectorAll('.player-ships__ship')];
@@ -271,6 +273,32 @@ const handleShipSelection = (e) => {
   }
 
   showDirection();
+};
+
+/**
+ * Allows a player to remove a placed ship before game start.
+ * @param {Event} e
+ */
+const handleShipRemove = (e) => {
+  const shipType = e.currentTarget.getAttribute('data-ship');
+  const matchingShip = playerShips.find((ship) => ship.type === shipType);
+  if (!matchingShip) throw new Error('Unable to remove non-existant ship');
+
+  // Remove ship from stored lists
+  playerShips.splice(playerShips.indexOf(matchingShip), 1);
+  playerBoard.removeShip(matchingShip.ref);
+  selectedShip = null;
+
+  // Swap event handlers
+  e.currentTarget.removeEventListener('click', handleShipRemove);
+  e.currentTarget.addEventListener('click', handleShipSelection);
+
+  // Update views
+  e.currentTarget.classList.remove('player-ships__ship_placed');
+  e.currentTarget.classList.remove('player-ships__ship_undamaged');
+  updateShipCounter();
+  updatePlayerShipStatus();
+  renderBoard(playerBoard, true);
 };
 
 // ============================================================================

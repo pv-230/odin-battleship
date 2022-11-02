@@ -21,11 +21,11 @@
 .player-ships__ship {
   padding: 5px;
   border: 1px solid black;
+  cursor: pointer;
 }
 
 .player-ships__ship:hover:not(.player-ships__ship_placed, .player-ships__ship_selected) {
   background-color: #dddddd;
-  cursor: pointer;
 }
 
 .player-ships__ship_selected {
