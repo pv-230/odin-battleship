@@ -2,7 +2,7 @@ const Gameboard = require('../src/models/Gameboard');
 
 const errLen = 'Invalid ship length';
 const errPos = 'Invalid ship position';
-const errOccupied = 'Ship cannot be placed on occupied tiles';
+const errorProximity = 'Ship cannot be placed too close to others';
 let gameboard;
 
 describe('Gameboard', () => {
@@ -68,7 +68,7 @@ describe('Gameboard', () => {
     ).not.toThrow();
     expect(() =>
       gameboard.placeShip(2, { origin: 'E1', direction: 'DOWN' })
-    ).toThrow(errOccupied);
+    ).toThrow(errorProximity);
     expect(gameboard.getTile('F1').ship).toBe(null);
   });
 
@@ -122,20 +122,20 @@ describe('Gameboard', () => {
 
   test('Not defeated with one sunk ship and one undamaged ship', () => {
     gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
-    gameboard.placeShip(2, { origin: 'A2', direction: 'DOWN' });
-    gameboard.receiveAttack('A2');
-    gameboard.receiveAttack('B2');
-    expect(gameboard.getTile('A2').ship.isSunk()).toBe(true);
+    gameboard.placeShip(2, { origin: 'A3', direction: 'DOWN' });
+    gameboard.receiveAttack('A3');
+    gameboard.receiveAttack('B3');
+    expect(gameboard.getTile('A3').ship.isSunk()).toBe(true);
     expect(gameboard.isDefeated()).toBe(false);
   });
 
   test('Is defeated with all ships sunk', () => {
     gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
-    gameboard.placeShip(2, { origin: 'A2', direction: 'DOWN' });
+    gameboard.placeShip(2, { origin: 'A3', direction: 'DOWN' });
     gameboard.receiveAttack('A1');
     gameboard.receiveAttack('B1');
-    gameboard.receiveAttack('A2');
-    gameboard.receiveAttack('B2');
+    gameboard.receiveAttack('A3');
+    gameboard.receiveAttack('B3');
     expect(gameboard.isDefeated()).toBe(true);
   });
 
@@ -160,7 +160,41 @@ describe('Gameboard', () => {
     gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
     expect(() =>
       gameboard.placeShip(2, { origin: 'A2', direction: 'LEFT' })
-    ).toThrowError('Ship cannot be placed on occupied tiles');
+    ).toThrowError('Ship cannot be placed too close to others');
     expect(gameboard.getTile('A2').ship).toBe(null);
+  });
+
+  test('Unable to place ships adjacent to each other', () => {
+    gameboard.placeShip(2, { origin: 'D5', direction: 'DOWN' });
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'F4', direction: 'DOWN' })
+    ).toThrow(errorProximity);
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'F5', direction: 'DOWN' })
+    ).toThrow(errorProximity);
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'F6', direction: 'DOWN' })
+    ).toThrow(errorProximity);
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'E4', direction: 'LEFT' })
+    ).toThrow(errorProximity);
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'E6', direction: 'RIGHT' })
+    ).toThrow(errorProximity);
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'D4', direction: 'LEFT' })
+    ).toThrow(errorProximity);
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'D6', direction: 'RIGHT' })
+    ).toThrow(errorProximity);
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'C4', direction: 'UP' })
+    ).toThrow(errorProximity);
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'C5', direction: 'UP' })
+    ).toThrow(errorProximity);
+    expect(() =>
+      gameboard.placeShip(2, { origin: 'C6', direction: 'UP' })
+    ).toThrow(errorProximity);
   });
 });

@@ -26,6 +26,30 @@ const Gameboard = () => {
   // Contains ships that are present on the board
   const ships = [];
 
+  const isAdjacent = (row, col) => {
+    if (
+      (grid[row - 1] &&
+        grid[row - 1][col - 1] &&
+        grid[row - 1][col - 1].ship) ||
+      (grid[row - 1] && grid[row - 1][col] && grid[row - 1][col].ship) ||
+      (grid[row - 1] &&
+        grid[row - 1][col + 1] &&
+        grid[row - 1][col + 1].ship) ||
+      (grid[row] && grid[row][col - 1] && grid[row][col - 1].ship) ||
+      (grid[row] && grid[row][col] && grid[row][col].ship) ||
+      (grid[row] && grid[row][col + 1] && grid[row][col + 1].ship) ||
+      (grid[row + 1] &&
+        grid[row + 1][col - 1] &&
+        grid[row + 1][col - 1].ship) ||
+      (grid[row + 1] && grid[row + 1][col] && grid[row + 1][col].ship) ||
+      (grid[row + 1] && grid[row + 1][col + 1] && grid[row + 1][col + 1].ship)
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   /**
    * Places a new ship on the gameboard.
    * @param {number} len Length of the ship to place.
@@ -36,33 +60,34 @@ const Gameboard = () => {
     const shipDirection = ship.getPosition().direction;
     const gridCopy = cloneDeep(grid);
     const gridCoord = toGridCoord(ship.getPosition().origin);
-    const err = 'Ship cannot be placed on occupied tiles';
+    const errorProximity = 'Ship cannot be placed too close to others';
 
     if (shipDirection === 'UP') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (gridCopy[row][col].ship) throw new Error(err);
+        // Checks if the grid space is occupied already
+        if (isAdjacent(row, col)) throw new Error(errorProximity);
         gridCopy[row][col].ship = ship;
         row--;
       }
     } else if (shipDirection === 'DOWN') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (gridCopy[row][col].ship) throw new Error(err);
+        if (isAdjacent(row, col)) throw new Error(errorProximity);
         gridCopy[row][col].ship = ship;
         row++;
       }
     } else if (shipDirection === 'LEFT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (gridCopy[row][col].ship) throw new Error(err);
+        if (isAdjacent(row, col)) throw new Error(errorProximity);
         gridCopy[row][col].ship = ship;
         col--;
       }
     } else if (shipDirection === 'RIGHT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (gridCopy[row][col].ship) throw new Error(err);
+        if (isAdjacent(row, col)) throw new Error(errorProximity);
         gridCopy[row][col].ship = ship;
         col++;
       }
