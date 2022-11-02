@@ -1,11 +1,8 @@
 const Gameboard = require('../src/models/Gameboard');
-
-const errLen = 'Invalid ship length';
-const errPos = 'Invalid ship position';
-const errorProximity = 'Ship cannot be placed too close to others';
-let gameboard;
+const { GameboardErrors, ShipErrors } = require('../src/errors');
 
 describe('Gameboard', () => {
+  let gameboard;
   beforeEach(() => {
     gameboard = Gameboard();
   });
@@ -68,18 +65,20 @@ describe('Gameboard', () => {
     ).not.toThrow();
     expect(() =>
       gameboard.placeShip(2, { origin: 'E1', direction: 'DOWN' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(gameboard.getTile('F1').ship).toBe(null);
   });
 
   test('Throws when placing ship at invalid position', () => {
-    expect(() => gameboard.placeShip(2, {})).toThrowError(errPos);
+    expect(() => gameboard.placeShip(2, {})).toThrowError(
+      ShipErrors.invalidShipPosition
+    );
   });
 
   test('Throws when placing ship with invalid length', () => {
     expect(() =>
       gameboard.placeShip(0, { origin: 'A1', direction: 'DOWN' })
-    ).toThrowError(errLen);
+    ).toThrowError(ShipErrors.invalidShipLength);
   });
 
   test('Attacks can miss', () => {
@@ -107,7 +106,7 @@ describe('Gameboard', () => {
 
   test('Throw if receiving attack to invalid tile', () => {
     expect(() => gameboard.receiveAttack('Z11')).toThrowError(
-      'Invalid tile coordinates'
+      GameboardErrors.invalidTileStr
     );
   });
 
@@ -168,34 +167,34 @@ describe('Gameboard', () => {
     gameboard.placeShip(2, { origin: 'D5', direction: 'DOWN' });
     expect(() =>
       gameboard.placeShip(2, { origin: 'F4', direction: 'DOWN' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(() =>
       gameboard.placeShip(2, { origin: 'F5', direction: 'DOWN' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(() =>
       gameboard.placeShip(2, { origin: 'F6', direction: 'DOWN' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(() =>
       gameboard.placeShip(2, { origin: 'E4', direction: 'LEFT' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(() =>
       gameboard.placeShip(2, { origin: 'E6', direction: 'RIGHT' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(() =>
       gameboard.placeShip(2, { origin: 'D4', direction: 'LEFT' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(() =>
       gameboard.placeShip(2, { origin: 'D6', direction: 'RIGHT' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(() =>
       gameboard.placeShip(2, { origin: 'C4', direction: 'UP' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(() =>
       gameboard.placeShip(2, { origin: 'C5', direction: 'UP' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
     expect(() =>
       gameboard.placeShip(2, { origin: 'C6', direction: 'UP' })
-    ).toThrow(errorProximity);
+    ).toThrow(GameboardErrors.proximity);
   });
 
   test('Can remove ships from the gameboard', () => {
