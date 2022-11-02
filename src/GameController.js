@@ -12,6 +12,7 @@ let computerBoard = null;
 let started = false;
 let selectedShip = null;
 const playerShips = [];
+const computerShips = [];
 
 // ============================================================================
 //  Gameboard functions
@@ -395,6 +396,32 @@ const handleRotation = (e) => {
   showDirection();
 };
 
+/**
+ * Randomly places the computer's ships on its board.
+ */
+const setupComputerBoard = () => {
+  computerShips.push({
+    type: 'carrier',
+    ref: computerBoard.placeShipRandom(5),
+  });
+  computerShips.push({
+    type: 'battleship',
+    ref: computerBoard.placeShipRandom(4),
+  });
+  computerShips.push({
+    type: 'cruiser',
+    ref: computerBoard.placeShipRandom(3),
+  });
+  computerShips.push({
+    type: 'submarine',
+    ref: computerBoard.placeShipRandom(3),
+  });
+  computerShips.push({
+    type: 'destroyer',
+    ref: computerBoard.placeShipRandom(2),
+  });
+};
+
 // ============================================================================
 //  Exported functions
 // ============================================================================
@@ -409,6 +436,7 @@ const initialize = () => {
   computerBoard = Gameboard();
 
   renderBoard(playerBoard, true);
+  setupComputerBoard();
   renderBoard(computerBoard, false);
 
   // Registers event listener for ship selection list

@@ -1,5 +1,6 @@
 const cloneDeep = require('lodash.clonedeep');
 const Ship = require('./Ship');
+const { GameboardErrors, ShipErrors } = require('../errors');
 
 /**
  * Helper function to convert a tile string to array indexes for the grid.
@@ -65,33 +66,36 @@ const Gameboard = () => {
     const shipDirection = ship.getPosition().direction;
     const gridCopy = cloneDeep(grid);
     const gridCoord = toGridCoord(ship.getPosition().origin);
-    const errorProximity = 'Ship cannot be placed too close to others';
 
     if (shipDirection === 'UP') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (checkProximity(row, col)) throw new Error(errorProximity);
+        if (checkProximity(row, col))
+          throw new Error(GameboardErrors.proximity);
         gridCopy[row][col].ship = ship;
         row--;
       }
     } else if (shipDirection === 'DOWN') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (checkProximity(row, col)) throw new Error(errorProximity);
+        if (checkProximity(row, col))
+          throw new Error(GameboardErrors.proximity);
         gridCopy[row][col].ship = ship;
         row++;
       }
     } else if (shipDirection === 'LEFT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (checkProximity(row, col)) throw new Error(errorProximity);
+        if (checkProximity(row, col))
+          throw new Error(GameboardErrors.proximity);
         gridCopy[row][col].ship = ship;
         col--;
       }
     } else if (shipDirection === 'RIGHT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (checkProximity(row, col)) throw new Error(errorProximity);
+        if (checkProximity(row, col))
+          throw new Error(GameboardErrors.proximity);
         gridCopy[row][col].ship = ship;
         col++;
       }
@@ -101,6 +105,47 @@ const Gameboard = () => {
 
     ships.push(ship);
     grid = gridCopy;
+    return ship;
+  };
+
+  const placeShipRandom = (len) => {
+    if (!len) throw new Error(GameboardErrors.missingLengthArg);
+    if (ships.length === 5) throw new Error(GameboardErrors.maxShipCount);
+
+    const directions = ['UP', 'RIGHT', 'DOWN', 'LEFT'];
+    let ship = null;
+
+    while (!ship) {
+      // Random tile
+      const row = Math.floor(Math.random() * 10);
+      const col = Math.floor(Math.random() * 10);
+      const origin = String.fromCharCode(65 + row).concat(`${col + 1}`);
+
+      // Random direction
+      let dir = Math.floor(Math.random() * 4);
+      let direction = directions[dir];
+
+      // Attempts to place ship at random tile in random direction. If
+      // placement fails, the next direction is attempted. If all directions
+      // fail, a new random tile will be chosen.
+      for (let i = 0; i < 4; i++) {
+        try {
+          ship = placeShip(len, { origin, direction });
+          break;
+        } catch (err) {
+          if (
+            err.message === GameboardErrors.proximity ||
+            err.message === ShipErrors.invalidShipPosition
+          ) {
+            // Attempts next direction
+            direction = directions[++dir % 4];
+          } else {
+            console.error(err);
+          }
+        }
+      }
+    }
+
     return ship;
   };
 
@@ -125,7 +170,7 @@ const Gameboard = () => {
       const { row, col } = toGridCoord(tileStr);
       tile = grid[row][col];
     } catch {
-      throw new Error('Invalid tile coordinates');
+      throw new Error(GameboardErrors.invalidTileStr);
     }
 
     // Tile has already been attacked
@@ -206,6 +251,7 @@ const Gameboard = () => {
     isDefeated,
     getShipCount,
     removeShip,
+    placeShipRandom,
   };
 };
 
