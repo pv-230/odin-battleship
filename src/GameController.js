@@ -319,6 +319,13 @@ const startGame = () => {
   const rightGameboard = document.querySelector('.gameboard_right');
   rightGameboard.classList.remove('gameboard_blurred');
 
+  // Removes event listeners for ship selection and remove cursor pointer
+  const shipElements = [...document.querySelectorAll('.player-ships__ship')];
+  shipElements.forEach((shipElement) => {
+    shipElement.style.setProperty('cursor', 'unset');
+    shipElement.removeEventListener('click', handleShipRemove);
+  });
+
   renderBoard(computerBoard, false);
 };
 
