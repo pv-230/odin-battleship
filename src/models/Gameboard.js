@@ -159,12 +159,53 @@ const Gameboard = () => {
    */
   const getShipCount = () => ships.length;
 
+  /**
+   * Removes the specified ship from the gameboard.
+   * @param {object} ship Ship object.
+   */
+  const removeShip = (ship) => {
+    if (!ship) return;
+
+    const gridCoord = toGridCoord(ship.getPosition().origin);
+    const shipDirection = ship.getPosition().direction;
+    const shipLength = ship.getLength();
+
+    if (shipDirection === 'UP') {
+      let { row, col } = gridCoord; // eslint-disable-line prefer-const
+      for (let i = shipLength; i > 0; i--) {
+        grid[row][col].ship = null;
+        row--;
+      }
+    } else if (shipDirection === 'DOWN') {
+      let { row, col } = gridCoord; // eslint-disable-line prefer-const
+      for (let i = shipLength; i > 0; i--) {
+        grid[row][col].ship = null;
+        row++;
+      }
+    } else if (shipDirection === 'LEFT') {
+      let { row, col } = gridCoord; // eslint-disable-line prefer-const
+      for (let i = shipLength; i > 0; i--) {
+        grid[row][col].ship = null;
+        col--;
+      }
+    } else if (shipDirection === 'RIGHT') {
+      let { row, col } = gridCoord; // eslint-disable-line prefer-const
+      for (let i = shipLength; i > 0; i--) {
+        grid[row][col].ship = null;
+        col++;
+      }
+    }
+
+    ships.splice(ships.indexOf(ship), 1);
+  };
+
   return {
     placeShip,
     getTile,
     receiveAttack,
     isDefeated,
     getShipCount,
+    removeShip,
   };
 };
 
