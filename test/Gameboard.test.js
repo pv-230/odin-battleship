@@ -197,4 +197,25 @@ describe('Gameboard', () => {
       gameboard.placeShip(2, { origin: 'C6', direction: 'UP' })
     ).toThrow(errorProximity);
   });
+
+  test('Can remove ships from the gameboard', () => {
+    const ship = gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
+    gameboard.removeShip(ship);
+    expect(gameboard.getTile('A1').ship).toBe(null);
+    expect(gameboard.getTile('B2').ship).toBe(null);
+  });
+
+  test('Can randomize ship placement', () => {
+    const carrier = gameboard.placeShipRandom(5);
+    const battleship = gameboard.placeShipRandom(4);
+    const crusier = gameboard.placeShipRandom(3);
+    const submarine = gameboard.placeShipRandom(3);
+    const destroyer = gameboard.placeShipRandom(2);
+    expect(gameboard.getShipCount()).toBe(5);
+    expect(carrier.getPosition()).not.toBeFalsy();
+    expect(battleship.getPosition()).not.toBeFalsy();
+    expect(crusier.getPosition()).not.toBeFalsy();
+    expect(submarine.getPosition()).not.toBeFalsy();
+    expect(destroyer.getPosition()).not.toBeFalsy();
+  });
 });

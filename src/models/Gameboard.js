@@ -155,27 +155,16 @@ const Gameboard = () => {
   };
 
   /**
-   * @returns An array containing status of each ship.
+   * @returns Number of ships on the gameboard.
    */
-  const getShipStatus = () => {
-    const shipStatus = [];
-
-    ships.forEach((ship) => {
-      shipStatus.push({
-        length: ship.getLength(),
-        hits: ship.getHits(),
-      });
-    });
-
-    return shipStatus;
-  };
+  const getShipCount = () => ships.length;
 
   return {
     placeShip,
     getTile,
     receiveAttack,
     isDefeated,
-    getShipStatus,
+    getShipCount,
   };
 };
 
