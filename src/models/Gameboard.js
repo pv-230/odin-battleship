@@ -19,6 +19,7 @@ const toGridCoord = (tileStr) => {
  */
 const Gameboard = () => {
   // Creates a 2D grid of tiles and their associated properties
+  // Origin point is located in the top left at row 0 and column 0.
   let grid = [...new Array(10)].map(() =>
     [...new Array(10)].map(() => ({ ship: null, status: 0 }))
   );
@@ -26,25 +27,29 @@ const Gameboard = () => {
   // Contains ships that are present on the board
   const ships = [];
 
-  const isAdjacent = (row, col) => {
-    if (
-      (grid[row - 1] &&
-        grid[row - 1][col - 1] &&
-        grid[row - 1][col - 1].ship) ||
-      (grid[row - 1] && grid[row - 1][col] && grid[row - 1][col].ship) ||
-      (grid[row - 1] &&
-        grid[row - 1][col + 1] &&
-        grid[row - 1][col + 1].ship) ||
-      (grid[row] && grid[row][col - 1] && grid[row][col - 1].ship) ||
-      (grid[row] && grid[row][col] && grid[row][col].ship) ||
-      (grid[row] && grid[row][col + 1] && grid[row][col + 1].ship) ||
-      (grid[row + 1] &&
-        grid[row + 1][col - 1] &&
-        grid[row + 1][col - 1].ship) ||
-      (grid[row + 1] && grid[row + 1][col] && grid[row + 1][col].ship) ||
-      (grid[row + 1] && grid[row + 1][col + 1] && grid[row + 1][col + 1].ship)
-    ) {
-      return true;
+  /**
+   * Checks the grid coordinate and adjacent points for existing ships.
+   * @param {number} row Grid row number
+   * @param {number} col Col row number
+   * @returns true if an existing ship is in proximity, false otherwise
+   */
+  const checkProximity = (row, col) => {
+    /*
+    For a given grid point, all adjacent points are checked for existing
+    ships. The order of checked points starts with the top adjacent points
+    left to right. Followed by middle adjacent points left to right.
+    Finally, the bottom adjacent points are checked left to right. Checks
+    for undefined are made so no errors are encountered if the initial grid
+    point is on the grid edge.
+    */
+    for (let r = row - 1; r <= row + 1; r++) {
+      if (grid[r]) {
+        for (let c = col - 1; c <= col + 1; c++) {
+          if (grid[r][c]) {
+            if (grid[r][c].ship) return true;
+          }
+        }
+      }
     }
 
     return false;
@@ -65,35 +70,35 @@ const Gameboard = () => {
     if (shipDirection === 'UP') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        // Checks if the grid space is occupied already
-        if (isAdjacent(row, col)) throw new Error(errorProximity);
+        if (checkProximity(row, col)) throw new Error(errorProximity);
         gridCopy[row][col].ship = ship;
         row--;
       }
     } else if (shipDirection === 'DOWN') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (isAdjacent(row, col)) throw new Error(errorProximity);
+        if (checkProximity(row, col)) throw new Error(errorProximity);
         gridCopy[row][col].ship = ship;
         row++;
       }
     } else if (shipDirection === 'LEFT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (isAdjacent(row, col)) throw new Error(errorProximity);
+        if (checkProximity(row, col)) throw new Error(errorProximity);
         gridCopy[row][col].ship = ship;
         col--;
       }
     } else if (shipDirection === 'RIGHT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (isAdjacent(row, col)) throw new Error(errorProximity);
+        if (checkProximity(row, col)) throw new Error(errorProximity);
         gridCopy[row][col].ship = ship;
         col++;
       }
     } else {
       throw new Error('Cannot place ship: Ship direction invalid');
     }
+
     ships.push(ship);
     grid = gridCopy;
     return ship;
