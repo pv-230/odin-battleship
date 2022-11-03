@@ -126,7 +126,7 @@
           <!-- Start window -->
           <div class="start-window">
             <div class="start-dialog">
-              <div class="start-dialog__status">Place your ships to start.</div>
+              <div class="start-dialog__status"></div>
               <div class="start-dialog__ship-counter">0/5 ships placed</div>
               <button class="start-dialog__btn" autocomplete="off" disabled>Start Game</button>
             </div>
@@ -155,10 +155,14 @@
       <div class="flex-break"></div>
 
       <!-- Message space -->
-      <div class="message-space">
-        <div class="message-space__outcome-msg hidden"></div>
-        <div class="message-space__msg">Click on your ships to place them in the grid.</div>
-        <button class="message-space__reset-btn hidden">Again?</button>
+      <div class="message-window-wrapper">
+        <div class="message-window">
+          <div class="message-window__outcome hidden"></div>
+          <div class="message-window__messages">
+            <div class="messages__msg">Click on your ships to place them in the grid.</div>
+          </div>
+          <button class="message-window__reset-btn hidden">Again?</button>
+        </div>
       </div>
     </div>
   </body>
