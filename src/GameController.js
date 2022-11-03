@@ -42,9 +42,9 @@ const renderBoard = (gameboard, showShips) => {
 
   // Selects the appropriate board
   if (showShips) {
-    tileGrid = document.querySelector('.gameboard_left > .gameboard__tile-grid');
+    tileGrid = document.querySelector('.gameboard_player > .gameboard__tile-grid');
   } else {
-    tileGrid = document.querySelector('.gameboard_right > .gameboard__tile-grid');
+    tileGrid = document.querySelector('.gameboard_computer > .gameboard__tile-grid');
   }
 
   // Clears previous rendering
@@ -78,7 +78,7 @@ const renderBoard = (gameboard, showShips) => {
         tile.classList.add('gameboard__tile_hit');
       }
 
-      // Register event listeners on unclicked target board tiles
+      // Register event listeners on unclicked computer board tiles
       if (started && !showShips && gameboard.getTile(tileStr).status === 0) {
         tile.addEventListener('click', handlePlayerAttack);
       }
@@ -98,7 +98,7 @@ const renderBoard = (gameboard, showShips) => {
  * Resets all tile colors to white
  */
 const resetTileColors = () => {
-  const tiles = [...document.querySelectorAll('.gameboard_left .gameboard__tile')];
+  const tiles = [...document.querySelectorAll('.gameboard_player .gameboard__tile')];
   tiles.forEach((tile) => {
     tile.classList.remove('gameboard__tile_placement');
   });
@@ -335,7 +335,7 @@ const startGame = () => {
   startWindow.classList.add('hidden');
 
   // Unblurs the right gameboard
-  const rightGameboard = document.querySelector('.gameboard_right');
+  const rightGameboard = document.querySelector('.gameboard_computer');
   rightGameboard.classList.remove('gameboard_blurred');
 
   // Removes event listeners for ship selection and remove cursor pointer
@@ -353,7 +353,7 @@ const startGame = () => {
  * Allows the game to end and prevents any more moves from being made.
  */
 const endGame = () => {
-  const tiles = [...document.querySelectorAll('.gameboard_right .gameboard__tile')];
+  const tiles = [...document.querySelectorAll('.gameboard_computer .gameboard__tile')];
 
   tiles.forEach((tile) => tile.removeEventListener('click', handlePlayerAttack));
 };
@@ -504,7 +504,7 @@ const initialize = () => {
 
   // Registers event listener for clearing any ship placement tile colors
   // when leaving the grid
-  const grid = document.querySelector('.gameboard_left .gameboard__tile-grid');
+  const grid = document.querySelector('.gameboard_player .gameboard__tile-grid');
   grid.addEventListener('mouseleave', resetTileColors);
 
   // Registers event listener for the start button
