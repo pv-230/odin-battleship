@@ -387,11 +387,13 @@ const endTurn = () => {
  */
 const updateShipCounter = () => {
   const count = playerShips.length;
+  const startBtn = document.querySelector('.start-dialog__btn');
 
   if (count === 5) {
     // Enables start button
-    const startBtn = document.querySelector('.start-dialog__btn');
     startBtn.removeAttribute('disabled');
+  } else {
+    startBtn.setAttribute('disabled', true);
   }
 
   // Updates the counter text
