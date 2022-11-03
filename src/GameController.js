@@ -27,6 +27,7 @@ const handlePlayerAttack = (e) => {
   const attackedTile = player.attack(computerBoard, tileStr);
   if (attackedTile) {
     renderBoard(computerBoard, false);
+    updateComputerShipStatus();
     endTurn();
   }
 };
@@ -207,7 +208,7 @@ const handleShipPlacement = (e) => {
 // ============================================================================
 
 /**
- * Colors the ships in the ship status window according to their status.
+ * Colors the ships in the player's ship status window according to their status.
  */
 const updatePlayerShipStatus = () => {
   const shipElements = [...document.querySelectorAll('.player-ships__ship')];
@@ -230,6 +231,32 @@ const updatePlayerShipStatus = () => {
       shipElement.classList.add('player-ships__ship_damaged');
     } else {
       shipElement.classList.add('player-ships__ship_undamaged');
+    }
+  });
+};
+
+/**
+ * Colors the ships in the computer's ship status window according to their status.
+ */
+const updateComputerShipStatus = () => {
+  const shipElements = [...document.querySelectorAll('.computer-ships__ship')];
+
+  // Clear any highlighted ships
+  shipElements.forEach((shipElement) => {
+    // Determines if current ship element matches with an existing ship
+    const shipType = shipElement.getAttribute('data-ship');
+    const matchingShip = computerShips.find((ship) => ship.type === shipType);
+    if (!matchingShip) return;
+
+    // Updates the ship status color
+    if (matchingShip.ref.isSunk()) {
+      shipElement.classList.remove('computer-ships__ship_damaged');
+      shipElement.classList.add('computer-ships__ship_sunk');
+    } else if (matchingShip.ref.getHits() > 0) {
+      shipElement.classList.remove('computer-ships__ship_undamaged');
+      shipElement.classList.add('computer-ships__ship_damaged');
+    } else {
+      shipElement.classList.add('computer-ships__ship_undamaged');
     }
   });
 };
@@ -319,6 +346,7 @@ const startGame = () => {
   });
 
   renderBoard(computerBoard, false);
+  updateComputerShipStatus();
 };
 
 /**

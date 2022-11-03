@@ -56,7 +56,8 @@
   background-color: rgb(255, 246, 112);
 }
 
-.player-ships__ship_sunk .computer-ships__ship_sunk {
+.player-ships__ship_sunk,
+.computer-ships__ship_sunk {
   background-color: rgb(228, 72, 72);
 }
 
