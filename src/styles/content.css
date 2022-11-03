@@ -9,12 +9,50 @@ body {
 .content {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   gap: 20px;
+  padding: 10px 0;
+  width: 100%;
+  overflow: auto;
+  user-select: none;
 }
 
 .player-space,
 .computer-space {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   gap: 20px;
+}
+
+.flex-break {
+  width: 100%;
+}
+
+/* Gameover dialog */
+
+.gameover-dialog {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+}
+
+.gameover-dialog.hidden {
+  display: none;
+}
+
+/* Status messages */
+
+.message-space {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  padding: 20px;
+  border-radius: 5px;
 }
