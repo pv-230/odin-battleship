@@ -11,8 +11,8 @@ let playerBoard = null;
 let computerBoard = null;
 let started = false;
 let selectedShip = null;
-const playerShips = [];
-const computerShips = [];
+let playerShips = [];
+let computerShips = [];
 let playerAttackCount = 0;
 let computerAttackCount = 0;
 
@@ -330,94 +330,6 @@ const handleShipRemove = (e) => {
 };
 
 // ============================================================================
-//  Game flow functions
-// ============================================================================
-
-/**
- * Starts the game.
- */
-const startGame = () => {
-  started = true;
-
-  // Hides the start window
-  const startWindow = document.querySelector('.start-window');
-  startWindow.classList.add('hidden');
-
-  // Unblurs the right gameboard
-  const rightGameboard = document.querySelector('.gameboard_computer');
-  const computerShipStatus = document.querySelector('.computer-ships');
-  rightGameboard.classList.remove('gameboard_blurred');
-  computerShipStatus.classList.remove('computer-ships_blurred');
-
-  // Removes event listeners for ship selection and remove cursor pointer
-  const shipElements = [...document.querySelectorAll('.player-ships__ship')];
-  shipElements.forEach((shipElement) => {
-    shipElement.style.setProperty('cursor', 'unset');
-    shipElement.removeEventListener('click', handleShipRemove);
-  });
-
-  renderBoard(computerBoard, false);
-  updateComputerShipStatus();
-};
-
-/**
- * Allows the game to end and prevents any more moves from being made.
- */
-const endGame = (winner) => {
-  const tiles = [...document.querySelectorAll('.gameboard_computer .gameboard__tile')];
-  tiles.forEach((tile) => tile.removeEventListener('click', handlePlayerAttack));
-
-  const messageSpace = document.querySelector('.message-space');
-  messageSpace.classList.add('hidden');
-
-  const gameoverDialog = document.querySelector('.gameover-dialog');
-  gameoverDialog.classList.remove('hidden');
-
-  const msg = document.querySelector('.gameover-dialog__message');
-  if (winner.isHuman()) {
-    msg.textContent = `You sunk all their ships in ${playerAttackCount} shots!`;
-  } else {
-    msg.textContent = `They sunk all your ships in ${computerAttackCount} shots!`;
-  }
-};
-
-/**
- * Allows the computer to make its turn against the player when the player's
- * turn is over.
- */
-const endTurn = () => {
-  computer.attack(playerBoard);
-  computerAttackCount++;
-  renderBoard(playerBoard, true);
-  updatePlayerShipStatus();
-
-  if (playerBoard.isDefeated()) {
-    console.log('player loses');
-    endGame(computer);
-  }
-};
-
-/**
- * Checks if all ships are placed and starts the game if so. Otherwise, the
- * placed ships counter text is updated.
- */
-const updateShipCounter = () => {
-  const count = playerShips.length;
-  const startBtn = document.querySelector('.start-dialog__btn');
-
-  if (count === 5) {
-    // Enables start button
-    startBtn.removeAttribute('disabled');
-  } else {
-    startBtn.setAttribute('disabled', true);
-  }
-
-  // Updates the counter text
-  const counterElement = document.querySelector('.start-dialog__ship-counter');
-  counterElement.textContent = `${playerShips.length}/5 ships placed`;
-};
-
-// ============================================================================
 //  Ship rotation functions
 // ============================================================================
 
@@ -467,6 +379,158 @@ const handleRotation = (e) => {
   showDirection();
 };
 
+// ============================================================================
+//  Game flow functions
+// ============================================================================
+
+/**
+ * Starts the game.
+ */
+const startGame = () => {
+  started = true;
+
+  // Hides the start window
+  const startWindow = document.querySelector('.start-window');
+  startWindow.classList.add('hidden');
+
+  // Unblurs the right gameboard
+  const gameboardComputer = document.querySelector('.gameboard_computer');
+  const computerShipStatus = document.querySelector('.computer-ships');
+  gameboardComputer.classList.remove('gameboard_blurred');
+  computerShipStatus.classList.remove('computer-ships_transparent');
+
+  // Removes event listeners for ship selection and remove cursor pointer
+  const shipElements = [...document.querySelectorAll('.player-ships__ship')];
+  shipElements.forEach((shipElement) => {
+    shipElement.style.setProperty('cursor', 'unset');
+    shipElement.removeEventListener('click', handleShipRemove);
+  });
+
+  renderBoard(computerBoard, false);
+  updateComputerShipStatus();
+};
+
+/**
+ * Resets the game.
+ */
+const resetGame = () => {
+  player = Player('Player');
+  computer = Player();
+  playerBoard = Gameboard();
+  computerBoard = Gameboard();
+  started = false;
+  playerShips = [];
+  computerShips = [];
+  playerAttackCount = 0;
+  computerAttackCount = 0;
+
+  renderBoard(playerBoard, true);
+  setupComputerBoard();
+  renderBoard(computerBoard, false);
+  updatePlayerShipStatus();
+  updateComputerShipStatus();
+  updateShipCounter();
+
+  // Resets ship status window
+  const playerShipElements = [...document.querySelectorAll('.player-ships__ship')];
+  playerShipElements.forEach((shipElement) => {
+    shipElement.style.setProperty('cursor', 'pointer');
+    shipElement.addEventListener('click', handleShipSelection);
+    shipElement.classList.remove('player-ships__ship_undamaged');
+    shipElement.classList.remove('player-ships__ship_damaged');
+    shipElement.classList.remove('player-ships__ship_sunk');
+    shipElement.classList.remove('player-ships__ship_placed');
+  });
+
+  // Adds event handlers for ship selection and a pointer cursor to each ship selection element
+  const computerShipElements = [...document.querySelectorAll('.computer-ships__ship')];
+  computerShipElements.forEach((shipElement) => {
+    shipElement.classList.remove('computer-ships__ship_undamaged');
+    shipElement.classList.remove('computer-ships__ship_damaged');
+    shipElement.classList.remove('computer-ships__ship_sunk');
+  });
+
+  // Hides the reset button
+  const resetBtn = document.querySelector('.message-space__reset-btn');
+  resetBtn.classList.add('hidden');
+
+  // Shows the start window
+  const startWindow = document.querySelector('.start-window');
+  startWindow.classList.remove('hidden');
+
+  // Blurs the right gameboard
+  const gameboardComputer = document.querySelector('.gameboard_computer');
+  const computerShipStatus = document.querySelector('.computer-ships');
+  gameboardComputer.classList.add('gameboard_blurred');
+  computerShipStatus.classList.add('computer-ships_transparent');
+
+  // Resets status message
+  const outcomeMsg = document.querySelector('.message-space__outcome-msg');
+  const msg = document.querySelector('.message-space__msg');
+  outcomeMsg.classList.add('hidden');
+  msg.textContent = 'Click on your ships to place them in the grid.';
+};
+
+/**
+ * Allows the game to end and prevents any more moves from being made.
+ */
+const endGame = (winner) => {
+  // Removes player ability to continue attack
+  const tiles = [...document.querySelectorAll('.gameboard_computer .gameboard__tile')];
+  tiles.forEach((tile) => tile.removeEventListener('click', handlePlayerAttack));
+
+  //
+  const resetBtn = document.querySelector('.message-space__reset-btn');
+  resetBtn.classList.remove('hidden');
+
+  const outcomeMsg = document.querySelector('.message-space__outcome-msg');
+  const msg = document.querySelector('.message-space__msg');
+  outcomeMsg.classList.remove('hidden');
+
+  if (winner.isHuman()) {
+    outcomeMsg.textContent = 'You won!';
+    msg.textContent = `You sunk all their ships in ${playerAttackCount} shots!`;
+  } else {
+    outcomeMsg.textContent = 'You lost!';
+    msg.textContent = `They sunk all your ships in ${computerAttackCount} shots!`;
+  }
+};
+
+/**
+ * Allows the computer to make its turn against the player when the player's
+ * turn is over.
+ */
+const endTurn = () => {
+  computer.attack(playerBoard);
+  computerAttackCount++;
+  renderBoard(playerBoard, true);
+  updatePlayerShipStatus();
+
+  if (playerBoard.isDefeated()) {
+    endGame(computer);
+  }
+};
+
+/**
+ * Checks if all ships are placed and starts the game if so. Otherwise, the
+ * placed ships counter text is updated.
+ */
+const updateShipCounter = () => {
+  const count = playerShips.length;
+  const startBtn = document.querySelector('.start-dialog__btn');
+
+  if (count === 5) {
+    // Enables start button
+    startBtn.removeAttribute('disabled');
+  } else {
+    startBtn.setAttribute('disabled', true);
+  }
+
+  // Updates the counter text
+  const counterElement = document.querySelector('.start-dialog__ship-counter');
+  counterElement.textContent = `${playerShips.length}/5 ships placed`;
+};
+
 /**
  * Randomly places the computer's ships on its board.
  */
@@ -493,10 +557,20 @@ const setupComputerBoard = () => {
   });
 };
 
+// ============================================================================
+//  Test functions
+// ============================================================================
+
 /**
  * Allows two computers to play against each other.
  */
 const testComputerFight = () => {
+  const shipElements = [...document.querySelectorAll('.player-ships__ship')];
+  shipElements.forEach((shipElement) => {
+    shipElement.removeEventListener('click', handleShipSelection);
+    shipElement.classList.add('player-ships__ship_placed');
+  });
+
   playerShips.push({
     type: 'carrier',
     ref: playerBoard.placeShipRandom(5),
@@ -534,7 +608,6 @@ const testComputerFight = () => {
     endTurn();
   }
 
-  renderBoard(playerBoard, true);
   renderBoard(computerBoard, false);
   updateComputerShipStatus();
 };
@@ -576,6 +649,10 @@ const initialize = () => {
   // Registers event listener for the start button
   const startButton = document.querySelector('.start-dialog__btn');
   startButton.addEventListener('click', startGame);
+
+  // Registers event listener for reset button
+  const resetButton = document.querySelector('.message-space__reset-btn');
+  resetButton.addEventListener('click', resetGame);
 
   // TEST
   testComputerFight();

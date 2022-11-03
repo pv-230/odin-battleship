@@ -27,8 +27,8 @@
   width: 125px;
 }
 
-.computer-ships_blurred {
-  filter: blur(3px);
+.computer-ships_transparent {
+  filter: opacity(0);
 }
 
 .computer-ships__ship {

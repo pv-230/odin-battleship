@@ -133,7 +133,7 @@
           </div>
         </div>
         <!-- Computer ship status -->
-        <div class="computer-ships computer-ships_blurred">
+        <div class="computer-ships computer-ships_transparent">
           <div class="computer-ships__ship computer-ships__ship_carrier" data-ship="carrier">
             Carrier
           </div>
@@ -156,13 +156,9 @@
 
       <!-- Message space -->
       <div class="message-space">
-        <div class="message-space__message">Click on your ships to place them in the grid.</div>
-      </div>
-
-      <!-- Game over window -->
-      <div class="gameover-dialog hidden">
-        <div class="gameover-dialog__message"></div>
-        <button class="gameover-dialog__reset-btn">Again?</button>
+        <div class="message-space__outcome-msg hidden"></div>
+        <div class="message-space__msg">Click on your ships to place them in the grid.</div>
+        <button class="message-space__reset-btn hidden">Again?</button>
       </div>
     </div>
   </body>
