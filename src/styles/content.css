@@ -34,29 +34,45 @@ body {
 
 /* Status messages */
 
-.message-space {
+.message-window-wrapper {
+  height: 225px;
+}
+
+.message-window {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  border: 1px solid black;
   padding: 20px;
+  border: 1px solid black;
   border-radius: 5px;
 }
 
-.message-space.hidden {
+.message-window__messages {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.message-window__messages.hidden {
   display: none;
 }
 
-.message-space__reset-btn.hidden {
+.message-window__reset-btn.hidden {
   display: none;
 }
 
-.message-space__outcome-msg {
+.message-window__outcome {
   font-size: 2rem;
 }
 
-.message-space__outcome-msg.hidden {
+.message-window__outcome.hidden {
   display: none;
+}
+
+.messages__msg_error {
+  color: red;
 }

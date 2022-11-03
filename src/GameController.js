@@ -27,10 +27,14 @@ let computerAttackCount = 0;
 const handlePlayerAttack = (e) => {
   const tileStr = e.currentTarget.getAttribute('data-tile');
   const attackedTile = player.attack(computerBoard, tileStr);
+
   if (attackedTile) {
     playerAttackCount++;
     renderBoard(computerBoard, false);
     updateComputerShipStatus();
+
+    const statusStr = statusToString(computerBoard.getTile(tileStr).status);
+    showStandardMsg(`You attacked ${tileStr} and ${statusStr}.`);
 
     // Check win condition
     if (computerBoard.isDefeated()) {
@@ -190,6 +194,7 @@ const handleShipPlacement = (e) => {
     });
 
     playerShips.push({ type: selectedShip.type, ref: ship });
+    showStandardMsg(`You have placed your ${selectedShip.type}.`);
 
     // Updates the selected ship element
     const shipElement = document.querySelector(`.player-ships__ship_${selectedShip.type}`);
@@ -208,7 +213,7 @@ const handleShipPlacement = (e) => {
     clearDirection();
     renderBoard(playerBoard, true);
   } catch (err) {
-    console.error(err);
+    showErrorMsg(err.message.concat('.'));
   }
 };
 
@@ -300,6 +305,7 @@ const handleShipSelection = (e) => {
     throw new Error('Invalid ship type attribute');
   }
 
+  showStandardMsg(`You have selected your ${shipType}.`);
   showDirection();
 };
 
@@ -327,6 +333,7 @@ const handleShipRemove = (e) => {
   updateShipCounter();
   updatePlayerShipStatus();
   renderBoard(playerBoard, true);
+  showStandardMsg(`You have removed your ${shipType}.`);
 };
 
 // ============================================================================
@@ -408,6 +415,8 @@ const startGame = () => {
 
   renderBoard(computerBoard, false);
   updateComputerShipStatus();
+  showStandardMsg('Game started!');
+  showStandardMsg('Click on the enemy tiles to attack.', true);
 };
 
 /**
@@ -451,7 +460,7 @@ const resetGame = () => {
   });
 
   // Hides the reset button
-  const resetBtn = document.querySelector('.message-space__reset-btn');
+  const resetBtn = document.querySelector('.message-window__reset-btn');
   resetBtn.classList.add('hidden');
 
   // Shows the start window
@@ -464,11 +473,12 @@ const resetGame = () => {
   gameboardComputer.classList.add('gameboard_blurred');
   computerShipStatus.classList.add('computer-ships_transparent');
 
-  // Resets status message
-  const outcomeMsg = document.querySelector('.message-space__outcome-msg');
-  const msg = document.querySelector('.message-space__msg');
+  // Resets status messages
+  const outcomeMsg = document.querySelector('.message-window__outcome');
   outcomeMsg.classList.add('hidden');
-  msg.textContent = 'Click on your ships to place them in the grid.';
+  showStandardMsg('Click on your ships to place them in the grid.');
+  const status = document.querySelector('.start-dialog__status');
+  status.textContent = 'Place your ships to start.';
 };
 
 /**
@@ -480,19 +490,18 @@ const endGame = (winner) => {
   tiles.forEach((tile) => tile.removeEventListener('click', handlePlayerAttack));
 
   //
-  const resetBtn = document.querySelector('.message-space__reset-btn');
+  const resetBtn = document.querySelector('.message-window__reset-btn');
   resetBtn.classList.remove('hidden');
 
-  const outcomeMsg = document.querySelector('.message-space__outcome-msg');
-  const msg = document.querySelector('.message-space__msg');
+  const outcomeMsg = document.querySelector('.message-window__outcome');
   outcomeMsg.classList.remove('hidden');
 
   if (winner.isHuman()) {
     outcomeMsg.textContent = 'You won!';
-    msg.textContent = `You sunk all their ships in ${playerAttackCount} shots!`;
+    showStandardMsg(`You sunk all their ships in ${playerAttackCount} shots!`, true);
   } else {
     outcomeMsg.textContent = 'You lost!';
-    msg.textContent = `They sunk all your ships in ${computerAttackCount} shots!`;
+    showStandardMsg(`They sunk all your ships in ${computerAttackCount} shots!`, true);
   }
 };
 
@@ -501,10 +510,13 @@ const endGame = (winner) => {
  * turn is over.
  */
 const endTurn = () => {
-  computer.attack(playerBoard);
+  const tileStr = computer.attack(playerBoard);
   computerAttackCount++;
   renderBoard(playerBoard, true);
   updatePlayerShipStatus();
+
+  const statusStr = statusToString(playerBoard.getTile(tileStr).status);
+  showStandardMsg(`The enemy attacked ${tileStr} and ${statusStr}.`, true);
 
   if (playerBoard.isDefeated()) {
     endGame(computer);
@@ -519,16 +531,19 @@ const updateShipCounter = () => {
   const count = playerShips.length;
   const startBtn = document.querySelector('.start-dialog__btn');
 
+  // Enables start button all ships placed
+  const status = document.querySelector('.start-dialog__status');
   if (count === 5) {
-    // Enables start button
     startBtn.removeAttribute('disabled');
+    status.textContent = 'The game is ready to start.';
   } else {
     startBtn.setAttribute('disabled', true);
+    status.textContent = 'Place your ships to start.';
   }
 
   // Updates the counter text
   const counterElement = document.querySelector('.start-dialog__ship-counter');
-  counterElement.textContent = `${playerShips.length}/5 ships placed`;
+  counterElement.textContent = `${playerShips.length}/5 ships placed.`;
 };
 
 /**
@@ -555,6 +570,65 @@ const setupComputerBoard = () => {
     type: 'destroyer',
     ref: computerBoard.placeShipRandom(2),
   });
+};
+
+// ============================================================================
+//  Message functions
+// ============================================================================
+
+/**
+ * Displays a status message.
+ * @param {string} msg The message to display.
+ * @param {boolean} append Will append an additional message if true
+ */
+const showStandardMsg = (msg, append = false) => {
+  const messages = document.querySelector('.message-window__messages');
+
+  const message = document.createElement('div');
+  message.classList.add('messages__msg');
+  message.textContent = msg;
+
+  if (append) {
+    messages.appendChild(message);
+  } else {
+    // Clears previous messages
+    while (messages.firstChild) {
+      messages.removeChild(messages.firstChild);
+    }
+    messages.appendChild(message);
+  }
+};
+
+const showErrorMsg = (msg) => {
+  const messages = document.querySelector('.message-window__messages');
+
+  // Clears previous messages
+  while (messages.firstChild) {
+    messages.removeChild(messages.firstChild);
+  }
+
+  const message = document.createElement('div');
+  message.classList.add('messages__msg');
+  message.classList.add('messages__msg_error');
+  message.textContent = msg;
+
+  messages.appendChild(message);
+};
+
+/**
+ * Converts a status number from a tile to a string description.
+ * @param {number} status 0 = unknown, 1 = missed, 2 = hit
+ */
+const statusToString = (status) => {
+  if (status === 1) {
+    return 'missed';
+  }
+
+  if (status === 2) {
+    return 'hit';
+  }
+
+  return '';
 };
 
 // ============================================================================
@@ -597,8 +671,10 @@ const testComputerFight = () => {
   for (let i = 0; i < 99; i++) {
     if (playerBoard.isDefeated()) break;
 
-    player.attack(computerBoard);
+    const tileStr = player.attack(computerBoard);
     playerAttackCount++;
+    const statusStr = statusToString(computerBoard.getTile(tileStr).status);
+    showStandardMsg(`You attacked ${tileStr} and ${statusStr}.`);
 
     if (computerBoard.isDefeated()) {
       endGame(player);
@@ -651,7 +727,7 @@ const initialize = () => {
   startButton.addEventListener('click', startGame);
 
   // Registers event listener for reset button
-  const resetButton = document.querySelector('.message-space__reset-btn');
+  const resetButton = document.querySelector('.message-window__reset-btn');
   resetButton.addEventListener('click', resetGame);
 
   // TEST
