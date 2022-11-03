@@ -9,76 +9,48 @@ describe('Gameboard', () => {
 
   test('Can place new ship on gameboard (up)', () => {
     gameboard.placeShip(2, { origin: 'F1', direction: 'UP' });
-    expect(gameboard.getTile('F1').ship.getPosition()).toHaveProperty(
-      'origin',
-      'F1'
-    );
-    expect(gameboard.getTile('E1').ship.getPosition()).toHaveProperty(
-      'origin',
-      'F1'
-    );
+    expect(gameboard.getTile('F1').ship.getPosition()).toHaveProperty('origin', 'F1');
+    expect(gameboard.getTile('E1').ship.getPosition()).toHaveProperty('origin', 'F1');
     expect(gameboard.getTile('D1').ship).toBe(null);
   });
 
   test('Can place new ship on gameboard (down)', () => {
     gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
-    expect(gameboard.getTile('A1').ship.getPosition()).toHaveProperty(
-      'origin',
-      'A1'
-    );
-    expect(gameboard.getTile('B1').ship.getPosition()).toHaveProperty(
-      'origin',
-      'A1'
-    );
+    expect(gameboard.getTile('A1').ship.getPosition()).toHaveProperty('origin', 'A1');
+    expect(gameboard.getTile('B1').ship.getPosition()).toHaveProperty('origin', 'A1');
     expect(gameboard.getTile('C1').ship).toBe(null);
   });
 
   test('Can place new ship on gameboard (left)', () => {
     gameboard.placeShip(2, { origin: 'A6', direction: 'LEFT' });
-    expect(gameboard.getTile('A6').ship.getPosition()).toHaveProperty(
-      'origin',
-      'A6'
-    );
-    expect(gameboard.getTile('A5').ship.getPosition()).toHaveProperty(
-      'origin',
-      'A6'
-    );
+    expect(gameboard.getTile('A6').ship.getPosition()).toHaveProperty('origin', 'A6');
+    expect(gameboard.getTile('A5').ship.getPosition()).toHaveProperty('origin', 'A6');
     expect(gameboard.getTile('A4').ship).toBe(null);
   });
 
   test('Can place new ship on gameboard (right)', () => {
     gameboard.placeShip(2, { origin: 'A1', direction: 'RIGHT' });
-    expect(gameboard.getTile('A1').ship.getPosition()).toHaveProperty(
-      'origin',
-      'A1'
-    );
-    expect(gameboard.getTile('A2').ship.getPosition()).toHaveProperty(
-      'origin',
-      'A1'
-    );
+    expect(gameboard.getTile('A1').ship.getPosition()).toHaveProperty('origin', 'A1');
+    expect(gameboard.getTile('A2').ship.getPosition()).toHaveProperty('origin', 'A1');
     expect(gameboard.getTile('A3').ship).toBe(null);
   });
 
   test('Cannot place ship on occupied tiles', () => {
-    expect(() =>
-      gameboard.placeShip(5, { origin: 'A1', direction: 'DOWN' })
-    ).not.toThrow();
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'E1', direction: 'DOWN' })
-    ).toThrow(GameboardErrors.proximity);
+    expect(() => gameboard.placeShip(5, { origin: 'A1', direction: 'DOWN' })).not.toThrow();
+    expect(() => gameboard.placeShip(2, { origin: 'E1', direction: 'DOWN' })).toThrow(
+      GameboardErrors.proximity
+    );
     expect(gameboard.getTile('F1').ship).toBe(null);
   });
 
   test('Throws when placing ship at invalid position', () => {
-    expect(() => gameboard.placeShip(2, {})).toThrowError(
-      ShipErrors.invalidShipPosition
-    );
+    expect(() => gameboard.placeShip(2, {})).toThrowError(ShipErrors.invalidShipPosition);
   });
 
   test('Throws when placing ship with invalid length', () => {
-    expect(() =>
-      gameboard.placeShip(0, { origin: 'A1', direction: 'DOWN' })
-    ).toThrowError(ShipErrors.invalidShipLength);
+    expect(() => gameboard.placeShip(0, { origin: 'A1', direction: 'DOWN' })).toThrowError(
+      ShipErrors.invalidShipLength
+    );
   });
 
   test('Attacks can miss', () => {
@@ -105,9 +77,7 @@ describe('Gameboard', () => {
   });
 
   test('Throw if receiving attack to invalid tile', () => {
-    expect(() => gameboard.receiveAttack('Z11')).toThrowError(
-      GameboardErrors.invalidTileStr
-    );
+    expect(() => gameboard.receiveAttack('Z11')).toThrowError(GameboardErrors.invalidTileStr);
   });
 
   test('Not defeated with empty board', () => {
@@ -157,44 +127,44 @@ describe('Gameboard', () => {
 
   test('Grid does not save ships that fail to place', () => {
     gameboard.placeShip(2, { origin: 'A1', direction: 'DOWN' });
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'A2', direction: 'LEFT' })
-    ).toThrowError('Ship cannot be placed too close to others');
+    expect(() => gameboard.placeShip(2, { origin: 'A2', direction: 'LEFT' })).toThrowError(
+      'Ship cannot be placed too close to others'
+    );
     expect(gameboard.getTile('A2').ship).toBe(null);
   });
 
   test('Unable to place ships adjacent to each other', () => {
     gameboard.placeShip(2, { origin: 'D5', direction: 'DOWN' });
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'F4', direction: 'DOWN' })
-    ).toThrow(GameboardErrors.proximity);
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'F5', direction: 'DOWN' })
-    ).toThrow(GameboardErrors.proximity);
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'F6', direction: 'DOWN' })
-    ).toThrow(GameboardErrors.proximity);
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'E4', direction: 'LEFT' })
-    ).toThrow(GameboardErrors.proximity);
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'E6', direction: 'RIGHT' })
-    ).toThrow(GameboardErrors.proximity);
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'D4', direction: 'LEFT' })
-    ).toThrow(GameboardErrors.proximity);
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'D6', direction: 'RIGHT' })
-    ).toThrow(GameboardErrors.proximity);
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'C4', direction: 'UP' })
-    ).toThrow(GameboardErrors.proximity);
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'C5', direction: 'UP' })
-    ).toThrow(GameboardErrors.proximity);
-    expect(() =>
-      gameboard.placeShip(2, { origin: 'C6', direction: 'UP' })
-    ).toThrow(GameboardErrors.proximity);
+    expect(() => gameboard.placeShip(2, { origin: 'F4', direction: 'DOWN' })).toThrow(
+      GameboardErrors.proximity
+    );
+    expect(() => gameboard.placeShip(2, { origin: 'F5', direction: 'DOWN' })).toThrow(
+      GameboardErrors.proximity
+    );
+    expect(() => gameboard.placeShip(2, { origin: 'F6', direction: 'DOWN' })).toThrow(
+      GameboardErrors.proximity
+    );
+    expect(() => gameboard.placeShip(2, { origin: 'E4', direction: 'LEFT' })).toThrow(
+      GameboardErrors.proximity
+    );
+    expect(() => gameboard.placeShip(2, { origin: 'E6', direction: 'RIGHT' })).toThrow(
+      GameboardErrors.proximity
+    );
+    expect(() => gameboard.placeShip(2, { origin: 'D4', direction: 'LEFT' })).toThrow(
+      GameboardErrors.proximity
+    );
+    expect(() => gameboard.placeShip(2, { origin: 'D6', direction: 'RIGHT' })).toThrow(
+      GameboardErrors.proximity
+    );
+    expect(() => gameboard.placeShip(2, { origin: 'C4', direction: 'UP' })).toThrow(
+      GameboardErrors.proximity
+    );
+    expect(() => gameboard.placeShip(2, { origin: 'C5', direction: 'UP' })).toThrow(
+      GameboardErrors.proximity
+    );
+    expect(() => gameboard.placeShip(2, { origin: 'C6', direction: 'UP' })).toThrow(
+      GameboardErrors.proximity
+    );
   });
 
   test('Can remove ships from the gameboard', () => {

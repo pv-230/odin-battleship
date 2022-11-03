@@ -41,13 +41,9 @@ const renderBoard = (gameboard, showShips) => {
 
   // Selects the appropriate board
   if (showShips) {
-    tileGrid = document.querySelector(
-      '.gameboard_left > .gameboard__tile-grid'
-    );
+    tileGrid = document.querySelector('.gameboard_left > .gameboard__tile-grid');
   } else {
-    tileGrid = document.querySelector(
-      '.gameboard_right > .gameboard__tile-grid'
-    );
+    tileGrid = document.querySelector('.gameboard_right > .gameboard__tile-grid');
   }
 
   // Clears previous rendering
@@ -101,9 +97,7 @@ const renderBoard = (gameboard, showShips) => {
  * Resets all tile colors to white
  */
 const resetTileColors = () => {
-  const tiles = [
-    ...document.querySelectorAll('.gameboard_left .gameboard__tile'),
-  ];
+  const tiles = [...document.querySelectorAll('.gameboard_left .gameboard__tile')];
   tiles.forEach((tile) => {
     tile.classList.remove('gameboard__tile_placement');
   });
@@ -188,9 +182,7 @@ const handleShipPlacement = (e) => {
     playerShips.push({ type: selectedShip.type, ref: ship });
 
     // Updates the selected ship element
-    const shipElement = document.querySelector(
-      `.player-ships__ship_${selectedShip.type}`
-    );
+    const shipElement = document.querySelector(`.player-ships__ship_${selectedShip.type}`);
     shipElement.removeEventListener('click', handleShipSelection);
     shipElement.addEventListener('click', handleShipRemove);
     shipElement.classList.add('player-ships__ship_placed');
@@ -333,13 +325,9 @@ const startGame = () => {
  * Allows the game to end and prevents any more moves from being made.
  */
 const endGame = () => {
-  const tiles = [
-    ...document.querySelectorAll('.gameboard_right .gameboard__tile'),
-  ];
+  const tiles = [...document.querySelectorAll('.gameboard_right .gameboard__tile')];
 
-  tiles.forEach((tile) =>
-    tile.removeEventListener('click', handlePlayerAttack)
-  );
+  tiles.forEach((tile) => tile.removeEventListener('click', handlePlayerAttack));
 };
 
 /**

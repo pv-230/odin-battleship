@@ -70,32 +70,28 @@ const Gameboard = () => {
     if (shipDirection === 'UP') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (checkProximity(row, col))
-          throw new Error(GameboardErrors.proximity);
+        if (checkProximity(row, col)) throw new Error(GameboardErrors.proximity);
         gridCopy[row][col].ship = ship;
         row--;
       }
     } else if (shipDirection === 'DOWN') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (checkProximity(row, col))
-          throw new Error(GameboardErrors.proximity);
+        if (checkProximity(row, col)) throw new Error(GameboardErrors.proximity);
         gridCopy[row][col].ship = ship;
         row++;
       }
     } else if (shipDirection === 'LEFT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (checkProximity(row, col))
-          throw new Error(GameboardErrors.proximity);
+        if (checkProximity(row, col)) throw new Error(GameboardErrors.proximity);
         gridCopy[row][col].ship = ship;
         col--;
       }
     } else if (shipDirection === 'RIGHT') {
       let { row, col } = gridCoord; // eslint-disable-line prefer-const
       for (let i = len; i > 0; i--) {
-        if (checkProximity(row, col))
-          throw new Error(GameboardErrors.proximity);
+        if (checkProximity(row, col)) throw new Error(GameboardErrors.proximity);
         gridCopy[row][col].ship = ship;
         col++;
       }
