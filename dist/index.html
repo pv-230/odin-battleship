@@ -8,100 +8,62 @@
   <script defer src="main.js"></script></head>
   <body>
     <div class="content">
-      <div class="player-ship-wrapper">
-        <div class="player-ships">
-          <div
-            class="player-ships__ship player-ships__ship_carrier"
-            data-ship="carrier"
-          >
-            Carrier
+      <!-- Player space -->
+      <div class="player-space">
+        <div class="player-ship-wrapper">
+          <!-- Player ship selection and status -->
+          <div class="player-ships">
+            <div class="player-ships__ship player-ships__ship_carrier" data-ship="carrier">
+              Carrier
+            </div>
+            <div class="player-ships__ship player-ships__ship_battleship" data-ship="battleship">
+              Battleship
+            </div>
+            <div class="player-ships__ship player-ships__ship_cruiser" data-ship="cruiser">
+              Cruiser
+            </div>
+            <div class="player-ships__ship player-ships__ship_submarine" data-ship="submarine">
+              Submarine
+            </div>
+            <div class="player-ships__ship player-ships__ship_destroyer" data-ship="destroyer">
+              Destroyer
+            </div>
           </div>
-          <div
-            class="player-ships__ship player-ships__ship_battleship"
-            data-ship="battleship"
-          >
-            Battleship
-          </div>
-          <div
-            class="player-ships__ship player-ships__ship_cruiser"
-            data-ship="cruiser"
-          >
-            Cruiser
-          </div>
-          <div
-            class="player-ships__ship player-ships__ship_submarine"
-            data-ship="submarine"
-          >
-            Submarine
-          </div>
-          <div
-            class="player-ships__ship player-ships__ship_destroyer"
-            data-ship="destroyer"
-          >
-            Destroyer
+          <!-- Player ship direction controls -->
+          <div class="ship-direction hidden">
+            <div class="ship-direction__title">Ship Direction</div>
+            <button
+              class="ship-direction__rotator ship-direction__rotator_up"
+              data-dir="UP"
+              type="button"
+            >
+              ↑
+            </button>
+            <button
+              class="ship-direction__rotator ship-direction__rotator_right"
+              data-dir="RIGHT"
+              type="button"
+            >
+              →
+            </button>
+            <button
+              class="ship-direction__rotator ship-direction__rotator_down"
+              data-dir="DOWN"
+              type="button"
+            >
+              ↓
+            </button>
+            <button
+              class="ship-direction__rotator ship-direction__rotator_left"
+              data-dir="LEFT"
+              type="button"
+            >
+              ←
+            </button>
           </div>
         </div>
-        <div class="ship-direction hidden">
-          <div class="ship-direction__title">Ship Direction</div>
-          <button
-            class="ship-direction__rotator ship-direction__rotator_up"
-            data-dir="UP"
-            type="button"
-          >
-            ↑
-          </button>
-          <button
-            class="ship-direction__rotator ship-direction__rotator_right"
-            data-dir="RIGHT"
-            type="button"
-          >
-            →
-          </button>
-          <button
-            class="ship-direction__rotator ship-direction__rotator_down"
-            data-dir="DOWN"
-            type="button"
-          >
-            ↓
-          </button>
-          <button
-            class="ship-direction__rotator ship-direction__rotator_left"
-            data-dir="LEFT"
-            type="button"
-          >
-            ←
-          </button>
-        </div>
-      </div>
-      <div class="gameboard gameboard_left">
-        <div class="gameboard__row-labels">
-          <div class="gameboard__row-label">A</div>
-          <div class="gameboard__row-label">B</div>
-          <div class="gameboard__row-label">C</div>
-          <div class="gameboard__row-label">D</div>
-          <div class="gameboard__row-label">E</div>
-          <div class="gameboard__row-label">F</div>
-          <div class="gameboard__row-label">G</div>
-          <div class="gameboard__row-label">H</div>
-          <div class="gameboard__row-label">I</div>
-          <div class="gameboard__row-label">J</div>
-        </div>
-        <div class="gameboard__col-labels">
-          <div class="gameboard__col-label">1</div>
-          <div class="gameboard__col-label">2</div>
-          <div class="gameboard__col-label">3</div>
-          <div class="gameboard__col-label">4</div>
-          <div class="gameboard__col-label">5</div>
-          <div class="gameboard__col-label">6</div>
-          <div class="gameboard__col-label">7</div>
-          <div class="gameboard__col-label">8</div>
-          <div class="gameboard__col-label">9</div>
-          <div class="gameboard__col-label">10</div>
-        </div>
-        <div class="gameboard__tile-grid"></div>
-      </div>
-      <div class="gameboard-wrapper">
-        <div class="gameboard gameboard_right gameboard_blurred">
+        <!-- Player's gameboard -->
+        <div class="gameboard gameboard_left">
           <div class="gameboard__row-labels">
             <div class="gameboard__row-label">A</div>
             <div class="gameboard__row-label">B</div>
@@ -128,13 +90,64 @@
           </div>
           <div class="gameboard__tile-grid"></div>
         </div>
-        <div class="start-window">
-          <div class="start-dialog">
-            <div class="start-dialog__status">Place your ships to start.</div>
-            <div class="start-dialog__ship-counter">0/5 ships placed</div>
-            <button class="start-dialog__btn" autocomplete="off" disabled>
-              Start Game
-            </button>
+      </div>
+
+      <!-- Computer space -->
+      <div class="computer-space">
+        <div class="gameboard-wrapper">
+          <!-- Computer's gameboard -->
+          <div class="gameboard gameboard_right gameboard_blurred">
+            <div class="gameboard__row-labels">
+              <div class="gameboard__row-label">A</div>
+              <div class="gameboard__row-label">B</div>
+              <div class="gameboard__row-label">C</div>
+              <div class="gameboard__row-label">D</div>
+              <div class="gameboard__row-label">E</div>
+              <div class="gameboard__row-label">F</div>
+              <div class="gameboard__row-label">G</div>
+              <div class="gameboard__row-label">H</div>
+              <div class="gameboard__row-label">I</div>
+              <div class="gameboard__row-label">J</div>
+            </div>
+            <div class="gameboard__col-labels">
+              <div class="gameboard__col-label">1</div>
+              <div class="gameboard__col-label">2</div>
+              <div class="gameboard__col-label">3</div>
+              <div class="gameboard__col-label">4</div>
+              <div class="gameboard__col-label">5</div>
+              <div class="gameboard__col-label">6</div>
+              <div class="gameboard__col-label">7</div>
+              <div class="gameboard__col-label">8</div>
+              <div class="gameboard__col-label">9</div>
+              <div class="gameboard__col-label">10</div>
+            </div>
+            <div class="gameboard__tile-grid"></div>
+          </div>
+          <!-- Start window -->
+          <div class="start-window">
+            <div class="start-dialog">
+              <div class="start-dialog__status">Place your ships to start.</div>
+              <div class="start-dialog__ship-counter">0/5 ships placed</div>
+              <button class="start-dialog__btn" autocomplete="off" disabled>Start Game</button>
+            </div>
+          </div>
+        </div>
+        <!-- Computer ship status -->
+        <div class="computer-ships">
+          <div class="computer-ships__ship computer-ships__ship_carrier" data-ship="carrier">
+            Carrier
+          </div>
+          <div class="computer-ships__ship computer-ships__ship_battleship" data-ship="battleship">
+            Battleship
+          </div>
+          <div class="computer-ships__ship computer-ships__ship_cruiser" data-ship="cruiser">
+            Cruiser
+          </div>
+          <div class="computer-ships__ship computer-ships__ship_submarine" data-ship="submarine">
+            Submarine
+          </div>
+          <div class="computer-ships__ship computer-ships__ship_destroyer" data-ship="destroyer">
+            Destroyer
           </div>
         </div>
       </div>

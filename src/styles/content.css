@@ -1,10 +1,20 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
 .content {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
   gap: 20px;
-  width: 100%;
-  height: 100vh;
+}
+
+.player-space,
+.computer-space {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
