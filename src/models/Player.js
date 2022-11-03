@@ -6,13 +6,11 @@
 const Player = (n) => {
   const name = n || 'Computer';
 
-  // Populates valid moves for the computer player
+  // Populates valid moves for the player
   const moves = [];
-  if (!n) {
-    for (let char = 65; char <= 74; char++) {
-      for (let num = 1; num <= 10; num++) {
-        moves.push(String.fromCharCode(char).concat(num.toString()));
-      }
+  for (let char = 65; char <= 74; char++) {
+    for (let num = 1; num <= 10; num++) {
+      moves.push(String.fromCharCode(char).concat(num.toString()));
     }
   }
 

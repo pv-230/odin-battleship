@@ -13,6 +13,8 @@ let started = false;
 let selectedShip = null;
 const playerShips = [];
 const computerShips = [];
+let playerAttackCount = 0;
+let computerAttackCount = 0;
 
 // ============================================================================
 //  Gameboard functions
@@ -26,9 +28,16 @@ const handlePlayerAttack = (e) => {
   const tileStr = e.currentTarget.getAttribute('data-tile');
   const attackedTile = player.attack(computerBoard, tileStr);
   if (attackedTile) {
+    playerAttackCount++;
     renderBoard(computerBoard, false);
     updateComputerShipStatus();
-    endTurn();
+
+    // Check win condition
+    if (computerBoard.isDefeated()) {
+      endGame(player);
+    } else {
+      endTurn();
+    }
   }
 };
 
@@ -354,10 +363,22 @@ const startGame = () => {
 /**
  * Allows the game to end and prevents any more moves from being made.
  */
-const endGame = () => {
+const endGame = (winner) => {
   const tiles = [...document.querySelectorAll('.gameboard_computer .gameboard__tile')];
-
   tiles.forEach((tile) => tile.removeEventListener('click', handlePlayerAttack));
+
+  const messageSpace = document.querySelector('.message-space');
+  messageSpace.classList.add('hidden');
+
+  const gameoverDialog = document.querySelector('.gameover-dialog');
+  gameoverDialog.classList.remove('hidden');
+
+  const msg = document.querySelector('.gameover-dialog__message');
+  if (winner.isHuman()) {
+    msg.textContent = `You sunk all their ships in ${playerAttackCount} shots!`;
+  } else {
+    msg.textContent = `They sunk all your ships in ${computerAttackCount} shots!`;
+  }
 };
 
 /**
@@ -365,19 +386,14 @@ const endGame = () => {
  * turn is over.
  */
 const endTurn = () => {
-  if (computerBoard.isDefeated()) {
-    console.log(`${player.getName()} wins!`);
-    endGame();
-    return;
-  }
-
   computer.attack(playerBoard);
+  computerAttackCount++;
   renderBoard(playerBoard, true);
   updatePlayerShipStatus();
 
   if (playerBoard.isDefeated()) {
-    console.log(`${computer.getName()} wins!`);
-    endGame();
+    console.log('player loses');
+    endGame(computer);
   }
 };
 
@@ -477,6 +493,52 @@ const setupComputerBoard = () => {
   });
 };
 
+/**
+ * Allows two computers to play against each other.
+ */
+const testComputerFight = () => {
+  playerShips.push({
+    type: 'carrier',
+    ref: playerBoard.placeShipRandom(5),
+  });
+  playerShips.push({
+    type: 'battleship',
+    ref: playerBoard.placeShipRandom(4),
+  });
+  playerShips.push({
+    type: 'cruiser',
+    ref: playerBoard.placeShipRandom(3),
+  });
+  playerShips.push({
+    type: 'submarine',
+    ref: playerBoard.placeShipRandom(3),
+  });
+  playerShips.push({
+    type: 'destroyer',
+    ref: playerBoard.placeShipRandom(2),
+  });
+
+  startGame();
+
+  for (let i = 0; i < 99; i++) {
+    if (playerBoard.isDefeated()) break;
+
+    player.attack(computerBoard);
+    playerAttackCount++;
+
+    if (computerBoard.isDefeated()) {
+      endGame(player);
+      break;
+    }
+
+    endTurn();
+  }
+
+  renderBoard(playerBoard, true);
+  renderBoard(computerBoard, false);
+  updateComputerShipStatus();
+};
+
 // ============================================================================
 //  Exported functions
 // ============================================================================
@@ -485,7 +547,7 @@ const setupComputerBoard = () => {
  * Initializes the start of the game.
  */
 const initialize = () => {
-  player = Player('Bob');
+  player = Player('Player');
   computer = Player();
   playerBoard = Gameboard();
   computerBoard = Gameboard();
@@ -514,6 +576,9 @@ const initialize = () => {
   // Registers event listener for the start button
   const startButton = document.querySelector('.start-dialog__btn');
   startButton.addEventListener('click', startGame);
+
+  // TEST
+  testComputerFight();
 };
 
 export default initialize;

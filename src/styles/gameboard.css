@@ -29,7 +29,7 @@
   border: 1px solid black;
 }
 
-.gameboard_right
+.gameboard_computer
   .gameboard__tile:hover:not(.gameboard__tile_ship, .gameboard__tile_hit, .gameboard__tile_missed) {
   background-color: #dddddd;
   cursor: pointer;
