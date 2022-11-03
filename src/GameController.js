@@ -336,7 +336,9 @@ const startGame = () => {
 
   // Unblurs the right gameboard
   const rightGameboard = document.querySelector('.gameboard_computer');
+  const computerShipStatus = document.querySelector('.computer-ships');
   rightGameboard.classList.remove('gameboard_blurred');
+  computerShipStatus.classList.remove('computer-ships_blurred');
 
   // Removes event listeners for ship selection and remove cursor pointer
   const shipElements = [...document.querySelectorAll('.player-ships__ship')];

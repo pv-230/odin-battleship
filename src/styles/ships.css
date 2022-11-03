@@ -27,6 +27,10 @@
   width: 125px;
 }
 
+.computer-ships_blurred {
+  filter: blur(3px);
+}
+
 .computer-ships__ship {
   padding: 5px;
   border: 1px solid black;
