@@ -1,18 +1,7 @@
 const cloneDeep = require('lodash.clonedeep');
 const Ship = require('./Ship');
+const { toGridCoord, toTileStr } = require('../utility/stringConversion');
 const { GameboardErrors, ShipErrors } = require('../errors');
-
-/**
- * Helper function to convert a tile string to array indexes for the grid.
- * @param {string} tileStr Represents a tile (e.g. 'A1').
- * @returns Object with 'row' and 'col' properties.
- */
-const toGridCoord = (tileStr) => {
-  // Convert row substring to uppercase ASCII code and subtract 65
-  const row = tileStr.slice(0, 1).toUpperCase().charCodeAt(0) - 65;
-  const col = parseInt(tileStr.slice(1), 10) - 1;
-  return { row, col };
-};
 
 /**
  * Gameboard factory function.
@@ -32,9 +21,10 @@ const Gameboard = () => {
    * Checks the grid coordinate and adjacent points for existing ships.
    * @param {number} row Grid row number
    * @param {number} col Col row number
+   * @param {Object} [shipToIgnore] Ignores tiles with this ship on it
    * @returns true if an existing ship is in proximity, false otherwise
    */
-  const checkProximity = (row, col) => {
+  const checkProximity = (row, col, shipToIgnore = null) => {
     /*
     For a given grid point, all adjacent points are checked for existing
     ships. The order of checked points starts with the top adjacent points
@@ -47,7 +37,7 @@ const Gameboard = () => {
       if (grid[r]) {
         for (let c = col - 1; c <= col + 1; c++) {
           if (grid[r][c]) {
-            if (grid[r][c].ship) return true;
+            if (grid[r][c].ship && grid[r][c].ship !== shipToIgnore) return true;
           }
         }
       }
@@ -115,7 +105,7 @@ const Gameboard = () => {
       // Random tile
       const row = Math.floor(Math.random() * 10);
       const col = Math.floor(Math.random() * 10);
-      const origin = String.fromCharCode(65 + row).concat(`${col + 1}`);
+      const origin = toTileStr(row, col);
 
       // Random direction
       let dir = Math.floor(Math.random() * 4);
@@ -248,6 +238,7 @@ const Gameboard = () => {
     getShipCount,
     removeShip,
     placeShipRandom,
+    checkProximity,
   };
 };
 
