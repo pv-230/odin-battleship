@@ -24,7 +24,7 @@ const Gameboard = () => {
    * @param {Object} [shipToIgnore] Ignores tiles with this ship on it
    * @returns true if an existing ship is in proximity, false otherwise
    */
-  const checkProximity = (row, col, shipToIgnore = null) => {
+  const checkProximity = (row, col) => {
     /*
     For a given grid point, all adjacent points are checked for existing
     ships. The order of checked points starts with the top adjacent points
@@ -37,7 +37,7 @@ const Gameboard = () => {
       if (grid[r]) {
         for (let c = col - 1; c <= col + 1; c++) {
           if (grid[r][c]) {
-            if (grid[r][c].ship && grid[r][c].ship !== shipToIgnore) return true;
+            if (grid[r][c].ship) return true;
           }
         }
       }
