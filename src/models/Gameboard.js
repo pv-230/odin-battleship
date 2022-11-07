@@ -141,7 +141,11 @@ const Gameboard = () => {
    */
   const getTile = (tileStr) => {
     const { row, col } = toGridCoord(tileStr);
-    return grid[row][col];
+    if (grid[row] && grid[row][col]) {
+      return grid[row][col];
+    }
+
+    return null;
   };
 
   /**

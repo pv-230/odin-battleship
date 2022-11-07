@@ -1,3 +1,5 @@
+const { toGridCoord, toTileStr } = require('../utility/stringConversion');
+
 /**
  * Represents a player. If no name is given, a computer player will be set up.
  * @param {string} n Player name. If empty, player becomes a computer.
@@ -13,6 +15,9 @@ const Player = (n) => {
       moves.push(String.fromCharCode(char).concat(num.toString()));
     }
   }
+
+  // Contains the next attacks a computer player should make based on tiles that hit
+  const nextAttacks = [];
 
   /**
    * @returns The player's name.
@@ -40,11 +45,46 @@ const Player = (n) => {
     const randomIndex = Math.floor(Math.random() * moves.length);
     const randomTile = moves.at(randomIndex);
     if (gameboard.receiveAttack(randomTile)) {
+      if (gameboard.getTile(randomTile).status === 2) {
+        setNextAttacks(randomTile, gameboard);
+      }
       moves.splice(randomIndex, 1);
       return randomTile;
     }
 
     return null;
+  };
+
+  /**
+   * Adds the next attacks that the computer should make if the tileStr represents a hit.
+   * @param {string} tileStr String that represents a tile (e.g. 'A1').
+   * @param {Object} gameboard Gameboard object.
+   */
+  const setNextAttacks = (tileStr, gameboard) => {
+    const { row, col } = toGridCoord(tileStr);
+    nextAttacks.splice(0);
+
+    // Checks up
+    if (gameboard.getTile(toTileStr(row - 1, col))) {
+      nextAttacks.push(toTileStr(row - 1, col));
+    }
+
+    // Checks to the right
+    if (gameboard.getTile(toTileStr(row, col + 1))) {
+      nextAttacks.push(toTileStr(row, col + 1));
+    }
+
+    // Checks down
+    if (gameboard.getTile(toTileStr(row + 1, col))) {
+      nextAttacks.push(toTileStr(row + 1, col));
+    }
+
+    // Checks to the left
+    if (gameboard.getTile(toTileStr(row, col - 1))) {
+      nextAttacks.push(toTileStr(row, col - 1));
+    }
+    console.log(`Hit on ${tileStr}`);
+    console.log(nextAttacks);
   };
 
   return {
