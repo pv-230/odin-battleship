@@ -71,6 +71,43 @@ const Player = (n) => {
   };
 
   /**
+   * Eliminates valid moves from the moves array. Used for when a ship is sunk to allow the
+   * computer to make better choices.
+   * @param {Object} ship Ship object.
+   * @param {Object} gameboard Gameboard object.
+   */
+  const deleteMovesNearShip = (ship, gameboard) => {
+    const shipLength = ship.getLength();
+    const shipDirection = ship.getPosition().direction;
+    const shipOrigin = ship.getPosition().origin;
+
+    let { row, col } = toGridCoord(shipOrigin);
+    for (let i = 0; i < shipLength; i++) {
+      for (let r = row - 1; r <= row + 1; r++) {
+        for (let c = col - 1; c <= col + 1; c++) {
+          const tile = gameboard.getTile(toTileStr(r, c));
+          if (tile) {
+            const movesIndex = moves.indexOf(toTileStr(r, c));
+            if (movesIndex >= 0) {
+              console.log(`Removing move: ${moves.splice(movesIndex, 1)}`);
+            }
+          }
+        }
+      }
+
+      if (shipDirection === 'UP') {
+        row--;
+      } else if (shipDirection === 'RIGHT') {
+        col++;
+      } else if (shipDirection === 'DOWN') {
+        row++;
+      } else if (shipDirection === 'LEFT') {
+        col--;
+      }
+    }
+  };
+
+  /**
    * @returns The player's name.
    */
   const getName = () => name;
@@ -121,6 +158,7 @@ const Player = (n) => {
         // Ship was sunk, clears next attacks to allow random attacks on tiles again
         firstHit = null;
         nextAttacks.splice(0);
+        deleteMovesNearShip(attackedTile.ship, gameboard);
       } else if (nextAttacks.length === 0 && !gameboard.getTile(firstHit).ship.isSunk()) {
         // Last attack missed and no next attacks available, attacking in other direction
         setNextAttacks(
