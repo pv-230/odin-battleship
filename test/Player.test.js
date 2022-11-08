@@ -1,5 +1,6 @@
 const Player = require('../src/models/Player');
 const Gameboard = require('../src/models/Gameboard');
+const PlayerErrors = require('../src/utility/errors');
 
 describe('Player', () => {
   test('Can get human player name', () => {
@@ -38,6 +39,6 @@ describe('Player', () => {
     for (let i = 0; i < 100; i++) {
       expect(() => player.attack(gameboard)).not.toThrow();
     }
-    expect(() => player.attack(gameboard)).toThrow('No valid moves remaining');
+    expect(() => player.attack(gameboard)).toThrow(PlayerErrors.noValidMoves);
   });
 });

@@ -1,5 +1,5 @@
 const Gameboard = require('../src/models/Gameboard');
-const { GameboardErrors, ShipErrors } = require('../src/errors');
+const { GameboardErrors, ShipErrors } = require('../src/utility/errors');
 
 describe('Gameboard', () => {
   let gameboard;

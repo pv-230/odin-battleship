@@ -1,7 +1,7 @@
 const cloneDeep = require('lodash.clonedeep');
 const Ship = require('./Ship');
 const { toGridCoord, toTileStr } = require('../utility/stringConversion');
-const { GameboardErrors, ShipErrors } = require('../errors');
+const { GameboardErrors, ShipErrors } = require('../utility/errors');
 
 /**
  * Gameboard factory function.
