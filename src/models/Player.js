@@ -89,7 +89,7 @@ const Player = (n) => {
           if (tile) {
             const movesIndex = moves.indexOf(toTileStr(r, c));
             if (movesIndex >= 0) {
-              console.log(`Removing move: ${moves.splice(movesIndex, 1)}`);
+              moves.splice(movesIndex, 1);
             }
           }
         }
