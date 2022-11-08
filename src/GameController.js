@@ -638,7 +638,7 @@ const statusToString = (status) => {
 /**
  * Allows two computers to play against each other.
  */
-const testComputerFight = () => {
+const testFight = (bothComputers = false) => {
   const shipElements = [...document.querySelectorAll('.player-ships__ship')];
   shipElements.forEach((shipElement) => {
     shipElement.removeEventListener('click', handleShipSelection);
@@ -666,7 +666,11 @@ const testComputerFight = () => {
     ref: playerBoard.placeShipRandom(2),
   });
 
+  renderBoard(playerBoard, true);
+  updatePlayerShipStatus();
   startGame();
+
+  if (!bothComputers) return;
 
   for (let i = 0; i < 99; i++) {
     if (playerBoard.isDefeated()) break;
@@ -731,7 +735,7 @@ const initialize = () => {
   resetButton.addEventListener('click', resetGame);
 
   // TEST
-  testComputerFight();
+  testFight(true);
 };
 
 export default initialize;
