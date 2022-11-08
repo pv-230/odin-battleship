@@ -20,37 +20,53 @@ const Player = (n) => {
   // Contains the next attacks a computer player should make based on tiles that hit
   const nextAttacks = [];
 
+  let firstHit = null;
+
   /**
    * Adds the next attacks that the computer should make if the tileStr represents a hit.
    * @param {string} tileStr String that represents a tile (e.g. 'A1').
    * @param {Object} gameboard Gameboard object.
+   * @param {string} [dir] Direction to limit attacks to.
    */
-  const setNextAttacks = (tileStr, gameboard) => {
+  const setNextAttacks = (tileStr, gameboard, dir = null) => {
+    let orientation = null;
+    if (dir === 'UP' || dir === 'DOWN') {
+      orientation = 'VERTICAL';
+    } else if (dir === 'LEFT' || dir === 'RIGHT') {
+      orientation = 'HORIZONTAL';
+    } else if (dir) {
+      throw new Error(PlayerErrors.invalidDirection);
+    }
+
     const { row, col } = toGridCoord(tileStr);
     nextAttacks.splice(0);
 
-    // Checks up
-    let tile = gameboard.getTile(toTileStr(row - 1, col));
-    if (tile && tile.status === 0) {
-      nextAttacks.push(toTileStr(row - 1, col));
+    if (!orientation || orientation === 'VERTICAL') {
+      // Checks up
+      let tile = gameboard.getTile(toTileStr(row - 1, col));
+      if (tile && tile.status === 0) {
+        nextAttacks.push(toTileStr(row - 1, col));
+      }
+
+      // Checks down
+      tile = gameboard.getTile(toTileStr(row + 1, col));
+      if (tile && tile.status === 0) {
+        nextAttacks.push(toTileStr(row + 1, col));
+      }
     }
 
-    // Checks to the right
-    tile = gameboard.getTile(toTileStr(row, col + 1));
-    if (tile && tile.status === 0) {
-      nextAttacks.push(toTileStr(row, col + 1));
-    }
+    if (!orientation || orientation === 'HORIZONTAL') {
+      // Checks to the right
+      let tile = gameboard.getTile(toTileStr(row, col + 1));
+      if (tile && tile.status === 0) {
+        nextAttacks.push(toTileStr(row, col + 1));
+      }
 
-    // Checks down
-    tile = gameboard.getTile(toTileStr(row + 1, col));
-    if (tile && tile.status === 0) {
-      nextAttacks.push(toTileStr(row + 1, col));
-    }
-
-    // Checks to the left
-    tile = gameboard.getTile(toTileStr(row, col - 1));
-    if (tile && tile.status === 0) {
-      nextAttacks.push(toTileStr(row, col - 1));
+      // Checks to the left
+      tile = gameboard.getTile(toTileStr(row, col - 1));
+      if (tile && tile.status === 0) {
+        nextAttacks.push(toTileStr(row, col - 1));
+      }
     }
   };
 
@@ -89,16 +105,30 @@ const Player = (n) => {
       nextAttacks.splice(randomIndex, 1);
 
       const attackedTile = gameboard.getTile(nextTileStr);
-      if (attackedTile.status === 2 && attackedTile.ship && !attackedTile.ship.isSunk()) {
-        setNextAttacks(nextTileStr, gameboard);
-        console.log(`Targeted hit on ${nextTileStr}`);
-        console.log(`Next attacks is now: ${nextAttacks}`);
-      } else if (attackedTile.ship && attackedTile.ship.isSunk()) {
-        nextAttacks.splice(0);
-        console.log('Ship sunk');
-        console.log(`Next attacks is now: ${nextAttacks}`);
-      }
+      if (attackedTile.status === 2 && !attackedTile.ship.isSunk()) {
+        // Attack was a hit, updating next attacks based on ship direction
+        setNextAttacks(nextTileStr, gameboard, attackedTile.ship.getPosition().direction);
 
+        if (nextAttacks.length === 0 && !gameboard.getTile(firstHit).ship.isSunk()) {
+          // End of ship reached and no next attacks available, attacking in other direction
+          setNextAttacks(
+            firstHit,
+            gameboard,
+            gameboard.getTile(firstHit).ship.getPosition().direction
+          );
+        }
+      } else if (attackedTile.status === 2 && attackedTile.ship.isSunk()) {
+        // Ship was sunk, clears next attacks to allow random attacks on tiles again
+        firstHit = null;
+        nextAttacks.splice(0);
+      } else if (nextAttacks.length === 0 && !gameboard.getTile(firstHit).ship.isSunk()) {
+        // Last attack missed and no next attacks available, attacking in other direction
+        setNextAttacks(
+          firstHit,
+          gameboard,
+          gameboard.getTile(firstHit).ship.getPosition().direction
+        );
+      }
       return nextTileStr;
     }
 
@@ -110,9 +140,8 @@ const Player = (n) => {
     // Checks if computer hit a ship
     if (gameboard.getTile(randomTile).status === 2) {
       // Allows computer to choose tiles near damaged ship
+      firstHit = randomTile;
       setNextAttacks(randomTile, gameboard);
-      console.log(`Random hit on ${randomTile}`);
-      console.log(`Next attacks: ${nextAttacks}`);
     }
 
     moves.splice(randomIndex, 1);

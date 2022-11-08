@@ -13,6 +13,7 @@ const ShipErrors = {
 const PlayerErrors = {
   noValidMoves: 'No valid moves remaining',
   compAttackFailed: 'Computer attack failed',
+  invalidDirection: 'Invalid direction',
 };
 
 module.exports = { GameboardErrors, ShipErrors, PlayerErrors };
