@@ -9,7 +9,6 @@ let player = null;
 let computer = null;
 let playerBoard = null;
 let computerBoard = null;
-let started = false;
 let selectedShip = null;
 let playerShips = [];
 let computerShips = [];
@@ -25,6 +24,14 @@ let computerAttackCount = 0;
  * @param {Event} e
  */
 const handlePlayerAttack = (e) => {
+  if (
+    e.currentTarget.classList.contains('gameboard__tile_missed') ||
+    e.currentTarget.classList.contains('gameboard__tile_hit')
+  ) {
+    // Prevents attacking of tiles that have already been attacked
+    return;
+  }
+
   const tileStr = e.currentTarget.getAttribute('data-tile');
   const attackedTile = player.attack(computerBoard, tileStr);
 
@@ -46,8 +53,35 @@ const handlePlayerAttack = (e) => {
 };
 
 /**
- *
- * @param {object} gb Gameboard object.
+ * Creates tiles for both 10x10 grids that represent gameboards.
+ */
+const createGridTiles = () => {
+  const playerTileGrid = document.querySelector('.gameboard_player > .gameboard__tile-grid');
+  const computerTileGrid = document.querySelector('.gameboard_computer > .gameboard__tile-grid');
+
+  let charCode = 65;
+  for (; charCode <= 74; charCode++) {
+    for (let col = 1; col <= 10; col++) {
+      const tileStr = String.fromCharCode(charCode).concat(col.toString());
+
+      const playerTile = document.createElement('div');
+      playerTile.classList.add('gameboard__tile');
+      playerTile.classList.add(`gameboard__tile_pos_${tileStr}`);
+      playerTile.setAttribute('data-tile', tileStr);
+      playerTileGrid.appendChild(playerTile);
+
+      const computerTile = document.createElement('div');
+      computerTile.classList.add('gameboard__tile');
+      computerTile.classList.add(`gameboard__tile_pos_${tileStr}`);
+      computerTile.setAttribute('data-tile', tileStr);
+      computerTileGrid.appendChild(computerTile);
+    }
+  }
+};
+
+/**
+ * Updates the color of each tile on the gameboard based on tile status.
+ * @param {Object} gb Gameboard object.
  * @param {boolean} showShips True if gameboard should display ship positions
  */
 const renderBoard = (gameboard, showShips) => {
@@ -60,55 +94,34 @@ const renderBoard = (gameboard, showShips) => {
     tileGrid = document.querySelector('.gameboard_computer > .gameboard__tile-grid');
   }
 
-  // Clears previous rendering
-  while (tileGrid.firstChild) {
-    tileGrid.removeChild(tileGrid.firstChild);
-  }
+  // Updates each tile
+  const tiles = [...tileGrid.children];
+  tiles.forEach((tile) => {
+    tile.classList.remove('gameboard__tile_ship');
+    tile.classList.remove('gameboard__tile_missed');
+    tile.classList.remove('gameboard__tile_hit');
 
-  // Creates the grid tiles
-  let charCode = 65;
-  for (; charCode <= 74; charCode++) {
-    for (let col = 1; col <= 10; col++) {
-      const tileStr = `${String.fromCharCode(charCode)}${col}`;
-      const tile = document.createElement('div');
+    const gameboardTile = gameboard.getTile(tile.getAttribute('data-tile'));
 
-      tile.classList.add('gameboard__tile');
-      tile.classList.add(`gameboard__tile_pos_${tileStr}`);
-      tile.setAttribute('data-tile', tileStr);
-
-      // Marks ship postions for player's board
-      if (showShips && gameboard.getTile(tileStr).ship) {
-        tile.classList.add('gameboard__tile_ship');
-      }
-
-      // Marks misses
-      if (gameboard.getTile(tileStr).status === 1) {
-        tile.classList.add('gameboard__tile_missed');
-      }
-
-      // Marks hits
-      if (gameboard.getTile(tileStr).status === 2) {
-        tile.classList.add('gameboard__tile_hit');
-      }
-
-      // Register event listeners on unclicked computer board tiles
-      if (started && !showShips && gameboard.getTile(tileStr).status === 0) {
-        tile.addEventListener('click', handlePlayerAttack);
-      }
-
-      // Register event listeners on player board for game start ship placement
-      if (!started && showShips) {
-        tile.addEventListener('mouseover', showShipPlacement);
-        tile.addEventListener('click', handleShipPlacement);
-      }
-
-      tileGrid.appendChild(tile);
+    // Marks ship postions for player's board
+    if (showShips && gameboardTile.ship) {
+      tile.classList.add('gameboard__tile_ship');
     }
-  }
+
+    // Marks misses
+    if (gameboardTile.status === 1) {
+      tile.classList.add('gameboard__tile_missed');
+    }
+
+    // Marks hits
+    if (gameboardTile.status === 2) {
+      tile.classList.add('gameboard__tile_hit');
+    }
+  });
 };
 
 /**
- * Resets all tile colors to white
+ * Resets tile color for tiles that previously indicated ship positions during placement.
  */
 const resetTileColors = () => {
   const tiles = [...document.querySelectorAll('.gameboard_player .gameboard__tile')];
@@ -394,8 +407,6 @@ const handleRotation = (e) => {
  * Starts the game.
  */
 const startGame = () => {
-  started = true;
-
   // Hides the start window
   const startWindow = document.querySelector('.start-window');
   startWindow.classList.add('hidden');
@@ -413,7 +424,12 @@ const startGame = () => {
     shipElement.removeEventListener('click', handleShipRemove);
   });
 
-  renderBoard(computerBoard, false);
+  // Registers event listeners for computer tiles
+  const computerTiles = [...document.querySelectorAll('.gameboard_computer .gameboard__tile')];
+  computerTiles.forEach((tile) => {
+    tile.addEventListener('click', handlePlayerAttack);
+  });
+
   updateComputerShipStatus();
   showStandardMsg('Game started!');
   showStandardMsg('Click on the enemy tiles to attack.', true);
@@ -427,20 +443,19 @@ const resetGame = () => {
   computer = Player();
   playerBoard = Gameboard();
   computerBoard = Gameboard();
-  started = false;
   playerShips = [];
   computerShips = [];
   playerAttackCount = 0;
   computerAttackCount = 0;
 
   renderBoard(playerBoard, true);
-  setupComputerBoard();
   renderBoard(computerBoard, false);
+  setupComputerBoard();
   updatePlayerShipStatus();
   updateComputerShipStatus();
   updateShipCounter();
 
-  // Resets ship status window
+  // Adds event handlers for ship selection and a pointer cursor to each ship selection element
   const playerShipElements = [...document.querySelectorAll('.player-ships__ship')];
   playerShipElements.forEach((shipElement) => {
     shipElement.style.setProperty('cursor', 'pointer');
@@ -451,7 +466,7 @@ const resetGame = () => {
     shipElement.classList.remove('player-ships__ship_placed');
   });
 
-  // Adds event handlers for ship selection and a pointer cursor to each ship selection element
+  // Resets computer ship status window
   const computerShipElements = [...document.querySelectorAll('.computer-ships__ship')];
   computerShipElements.forEach((shipElement) => {
     shipElement.classList.remove('computer-ships__ship_undamaged');
@@ -489,7 +504,6 @@ const endGame = (winner) => {
   const tiles = [...document.querySelectorAll('.gameboard_computer .gameboard__tile')];
   tiles.forEach((tile) => tile.removeEventListener('click', handlePlayerAttack));
 
-  //
   const resetBtn = document.querySelector('.message-window__reset-btn');
   resetBtn.classList.remove('hidden');
 
@@ -531,7 +545,7 @@ const updateShipCounter = () => {
   const count = playerShips.length;
   const startBtn = document.querySelector('.start-dialog__btn');
 
-  // Enables start button all ships placed
+  // Enables start button if all ships placed
   const status = document.querySelector('.start-dialog__status');
   if (count === 5) {
     startBtn.removeAttribute('disabled');
@@ -599,6 +613,10 @@ const showStandardMsg = (msg, append = false) => {
   }
 };
 
+/**
+ * Displays an error message.
+ * @param {string} msg The error message to display.
+ */
 const showErrorMsg = (msg) => {
   const messages = document.querySelector('.message-window__messages');
 
@@ -700,14 +718,19 @@ const testFight = (bothComputers = false) => {
  * Initializes the start of the game.
  */
 const initialize = () => {
+  createGridTiles();
   player = Player('Player');
   computer = Player();
   playerBoard = Gameboard();
   computerBoard = Gameboard();
-
-  renderBoard(playerBoard, true);
   setupComputerBoard();
-  renderBoard(computerBoard, false);
+
+  // Register event listeners on player board for game start ship placement
+  const playerTiles = [...document.querySelectorAll('.gameboard_player .gameboard__tile')];
+  playerTiles.forEach((tile) => {
+    tile.addEventListener('mouseover', showShipPlacement);
+    tile.addEventListener('click', handleShipPlacement);
+  });
 
   // Registers event listener for ship selection list
   const shipElements = [...document.querySelectorAll('.player-ships__ship')];
@@ -735,7 +758,7 @@ const initialize = () => {
   resetButton.addEventListener('click', resetGame);
 
   // TEST
-  testFight(true);
+  // testFight();
 };
 
 export default initialize;
