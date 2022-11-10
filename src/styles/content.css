@@ -1,3 +1,18 @@
+:root {
+  --content-bg-color: #606c80;
+  --mild-white: #b0b1bd;
+  --midnight: #0e0f24;
+  --ship-bg-color: #9b3838;
+  --ship-undamaged-color: #418820;
+  --ship-damaged-color: #abad3a;
+  --ship-hover-color: #005974;
+  --ship-selected-color: #007ba0;
+  --direction-hover-color: #005974;
+  --direction-selected-color: #007ba0;
+
+  --default-border-radius: 3px;
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -12,11 +27,14 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  align-content: center;
   gap: 20px;
   padding: 10px 0;
   width: 100%;
+  height: 100%;
   overflow: auto;
   user-select: none;
+  background-color: var(--content-bg-color);
 }
 
 .player-space,
@@ -45,8 +63,9 @@ body {
   align-items: center;
   gap: 20px;
   padding: 20px;
-  border: 1px solid black;
+  border: 1px solid var(--midnight);
   border-radius: 5px;
+  color: var(--mmidnight);
 }
 
 .message-window__messages {

@@ -2,9 +2,12 @@
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: repeat(11, 1fr);
-  border: 2px solid black;
+  border: 2px solid var(--midnight);
+  border-radius: var(--default-border-radius);
   width: clamp(275px, 80vw, 400px);
   height: clamp(275px, 80vw, 400px);
+  color: var(--midnight);
+  font-weight: bold;
 }
 
 .gameboard_blurred {
@@ -19,36 +22,37 @@
   grid-template-rows: repeat(10, 1fr);
   grid-column: 2 / 11;
   grid-row: 2 / 11;
-  border: 1px solid black;
+  border: 1px solid var(--midnight);
+  border-radius: var(--default-border-radius);
 }
 
 .gameboard__tile {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid black;
+  border: 1px solid var(--midnight);
 }
 
 .gameboard_computer
   .gameboard__tile:hover:not(.gameboard__tile_ship, .gameboard__tile_hit, .gameboard__tile_missed) {
-  background-color: #dddddd;
+  background-color: var(--mild-white);
   cursor: pointer;
 }
 
 .gameboard__tile_ship {
-  background-color: aquamarine;
+  background-color: var(--ship-selected-color);
 }
 
 .gameboard__tile_missed {
-  background-color: yellow;
+  background-color: var(--ship-damaged-color);
 }
 
 .gameboard__tile_hit {
-  background-color: red;
+  background-color: var(--ship-bg-color);
 }
 
 .gameboard__tile_placement {
-  background-color: aquamarine;
+  background-color: var(--ship-selected-color);
 }
 
 /* Labels */
@@ -97,7 +101,7 @@
   justify-content: space-evenly;
   align-items: center;
   background-color: #ddd;
-  border: 1px solid black;
+  border: 1px solid var(--midnight);
   width: 70%;
   height: 40%;
   border-radius: 5px;

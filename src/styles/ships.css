@@ -10,20 +10,22 @@
   width: 125px;
 }
 
-.player-ships {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border: 1px solid black;
-  width: 100%;
-}
-
+.player-ships,
 .computer-ships {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  font-weight: bold;
+  border: 2px solid var(--midnight);
+  border-radius: var(--default-border-radius);
+}
+
+.player-ships {
+  width: 100%;
+}
+
+.computer-ships {
   align-self: flex-start;
-  border: 1px solid black;
   width: 125px;
 }
 
@@ -31,38 +33,43 @@
   filter: opacity(0);
 }
 
+.player-ships__ship,
 .computer-ships__ship {
   padding: 5px;
-  border: 1px solid black;
+}
+
+.player-ships__ship:not(.player-ships__ship:last-child),
+.computer-ships__ship:not(.computer-ships__ship:last-child) {
+  border-bottom: 1px solid var(--midnight);
 }
 
 .player-ships__ship {
-  padding: 5px;
-  border: 1px solid black;
   cursor: pointer;
+  background-color: var(--ship-bg-color);
 }
 
 .player-ships__ship:hover:not(.player-ships__ship_placed, .player-ships__ship_selected) {
-  background-color: #dddddd;
+  background-color: var(--ship-hover-color);
 }
 
 .player-ships__ship_selected {
-  background-color: rgb(127, 150, 255);
+  background-color: var(--ship-selected-color);
+  cursor: unset;
 }
 
 .player-ships__ship_undamaged,
 .computer-ships__ship_undamaged {
-  background-color: rgb(112, 255, 112);
+  background-color: var(--ship-undamaged-color);
 }
 
 .player-ships__ship_damaged,
 .computer-ships__ship_damaged {
-  background-color: rgb(255, 246, 112);
+  background-color: var(--ship-damaged-color);
 }
 
 .player-ships__ship_sunk,
 .computer-ships__ship_sunk {
-  background-color: rgb(228, 72, 72);
+  background-color: var(--ship-bg-color);
 }
 
 /* Ship direction rotation */
@@ -72,9 +79,12 @@
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 5px;
-  border: 2px solid black;
+  border: 2px solid var(--midnight);
+  border-radius: var(--default-border-radius);
   padding: 5px;
   width: 100%;
+  color: var(--midnight);
+  font-weight: bold;
 }
 
 .ship-direction__rotator {
@@ -82,23 +92,24 @@
   justify-content: center;
   align-items: center;
   padding: 5px;
-  border: 1px solid black;
+  border: 1px solid var(--midnight);
   border-radius: 5px;
-  background-color: white;
+  background-color: var(--mild-white);
 }
 
-.ship-direction__rotator:hover {
-  background-color: #dddddd;
+.ship-direction__rotator:hover:not(.ship-direction__rotator_selected) {
+  background-color: var(--direction-hover-color);
   cursor: pointer;
 }
 
 .ship-direction__rotator_selected {
-  background-color: #dddddd;
+  background-color: var(--direction-selected-color);
 }
 
 .ship-direction__title {
   grid-column: 1 / 4;
   grid-row: 1 / 2;
+  text-align: center;
 }
 
 .ship-direction__rotator_up {

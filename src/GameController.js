@@ -758,7 +758,7 @@ const initialize = () => {
   resetButton.addEventListener('click', resetGame);
 
   // TEST
-  // testFight();
+  // testFight(true);
 };
 
 export default initialize;
