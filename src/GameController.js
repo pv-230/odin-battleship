@@ -1,5 +1,6 @@
 import Player from './models/Player';
 import Gameboard from './models/Gameboard';
+import { statusToString } from './utility/stringConversion';
 
 // ============================================================================
 //  Controller variables
@@ -38,7 +39,10 @@ const handlePlayerAttack = (e) => {
   if (attackedTile) {
     playerAttackCount++;
     renderBoard(computerBoard, false);
-    updateComputerShipStatus();
+
+    if (computerBoard.getTile(tileStr).ship && computerBoard.getTile(tileStr).ship.isSunk()) {
+      updateComputerShipStatus();
+    }
 
     const statusStr = statusToString(computerBoard.getTile(tileStr).status);
     showStandardMsg(`You attacked ${tileStr} and ${statusStr}.`);
@@ -633,22 +637,6 @@ const showErrorMsg = (msg) => {
   messages.appendChild(message);
 };
 
-/**
- * Converts a status number from a tile to a string description.
- * @param {number} status 0 = unknown, 1 = missed, 2 = hit
- */
-const statusToString = (status) => {
-  if (status === 1) {
-    return 'missed';
-  }
-
-  if (status === 2) {
-    return 'hit';
-  }
-
-  return '';
-};
-
 // ============================================================================
 //  Test functions
 // ============================================================================
@@ -758,7 +746,7 @@ const initialize = () => {
   resetButton.addEventListener('click', resetGame);
 
   // TEST
-  // testFight(true);
+  // testFight();
 };
 
 export default initialize;

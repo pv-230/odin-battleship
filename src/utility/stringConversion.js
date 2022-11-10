@@ -18,4 +18,20 @@ const toGridCoord = (tileStr) => {
  */
 const toTileStr = (row, col) => String.fromCharCode(65 + row).concat(`${col + 1}`);
 
-module.exports = { toGridCoord, toTileStr };
+/**
+ * Converts a status number from a tile to a string description.
+ * @param {number} status 0 = unknown, 1 = missed, 2 = hit
+ */
+const statusToString = (status) => {
+  if (status === 1) {
+    return 'missed';
+  }
+
+  if (status === 2) {
+    return 'hit';
+  }
+
+  return '';
+};
+
+module.exports = { toGridCoord, toTileStr, statusToString };
