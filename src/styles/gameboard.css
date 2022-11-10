@@ -46,7 +46,7 @@
 }
 
 .gameboard__tile_missed {
-  background-color: var(--ship-damaged-color);
+  background-color: var(--tile-missed-color);
 }
 
 .gameboard__tile_hit {
@@ -122,7 +122,8 @@
 }
 
 .start-dialog__btn:disabled {
-  background-color: var(--ship-bg-color);
+  background-color: var(--tile-normal-color);
+  color: var(--gameboard-bg-color);
 }
 
 .start-dialog__btn:not(.start-dialog__btn:disabled):hover {

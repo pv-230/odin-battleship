@@ -11,7 +11,9 @@
   --direction-hover-color: #005974;
   --direction-selected-color: #007ba0;
   --tile-normal-color: #2d374f;
+  --tile-missed-color: #1a1b37;
   --gameboard-bg-color: #606c80;
+  --error-red-color: #9b3838;
 
   --default-border-radius: 3px;
 }
@@ -113,6 +115,6 @@ button {
   display: none;
 }
 
-.messages__msg_error {
-  color: red;
+.message-window_error {
+  background-color: var(--error-red-color);
 }

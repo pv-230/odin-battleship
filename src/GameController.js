@@ -606,6 +606,10 @@ const showStandardMsg = (msg, append = false) => {
   message.classList.add('messages__msg');
   message.textContent = msg;
 
+  // Removes any previous error styling
+  const messageWindow = document.querySelector('.message-window');
+  messageWindow.classList.remove('message-window_error');
+
   if (append) {
     messages.appendChild(message);
   } else {
@@ -631,8 +635,11 @@ const showErrorMsg = (msg) => {
 
   const message = document.createElement('div');
   message.classList.add('messages__msg');
-  message.classList.add('messages__msg_error');
   message.textContent = msg;
+
+  // Styles the message window to indicate an error
+  const messageWindow = document.querySelector('.message-window');
+  messageWindow.classList.add('message-window_error');
 
   messages.appendChild(message);
 };
