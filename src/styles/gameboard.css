@@ -107,6 +107,7 @@
   height: 40%;
   border-radius: 5px;
   background-color: var(--gameboard-bg-color);
+  color: var(--midnight);
 }
 
 .start-window.hidden {

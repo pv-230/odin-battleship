@@ -53,6 +53,10 @@ body {
   width: 100%;
 }
 
+button {
+  font-size: 1rem;
+}
+
 /* Status messages */
 
 .message-window-wrapper {
@@ -82,6 +86,19 @@ body {
 
 .message-window__messages.hidden {
   display: none;
+}
+
+.message-window__reset-btn:hover {
+  background-color: var(--mild-white-hover);
+  cursor: pointer;
+}
+
+.message-window__reset-btn {
+  border: 1px solid var(--midnight);
+  border-radius: var(--default-border-radius);
+  padding: 5px;
+  color: var(--midnight);
+  background-color: var(--mild-white);
 }
 
 .message-window__reset-btn.hidden {
