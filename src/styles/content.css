@@ -1,6 +1,7 @@
 :root {
-  --content-bg-color: #606c80;
+  --content-bg-color: #5d6d88;
   --mild-white: #b0b1bd;
+  --mild-white-hover: #9495a0;
   --midnight: #0e0f24;
   --ship-bg-color: #9b3838;
   --ship-undamaged-color: #418820;
@@ -9,6 +10,8 @@
   --ship-selected-color: #007ba0;
   --direction-hover-color: #005974;
   --direction-selected-color: #007ba0;
+  --tile-normal-color: #2d374f;
+  --gameboard-bg-color: #606c80;
 
   --default-border-radius: 3px;
 }
@@ -65,7 +68,8 @@ body {
   padding: 20px;
   border: 1px solid var(--midnight);
   border-radius: 5px;
-  color: var(--mmidnight);
+  background-color: var(--gameboard-bg-color);
+  color: var(--midnight);
 }
 
 .message-window__messages {

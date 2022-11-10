@@ -8,6 +8,7 @@
   height: clamp(275px, 80vw, 400px);
   color: var(--midnight);
   font-weight: bold;
+  background-color: var(--gameboard-bg-color);
 }
 
 .gameboard_blurred {
@@ -31,6 +32,7 @@
   justify-content: center;
   align-items: center;
   border: 1px solid var(--midnight);
+  background-color: var(--tile-normal-color);
 }
 
 .gameboard_computer
@@ -100,13 +102,34 @@
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  background-color: #ddd;
   border: 1px solid var(--midnight);
   width: 70%;
   height: 40%;
   border-radius: 5px;
+  background-color: var(--gameboard-bg-color);
 }
 
 .start-window.hidden {
   display: none;
+}
+
+.start-dialog__btn {
+  border: 1px solid var(--midnight);
+  border-radius: var(--default-border-radius);
+  padding: 5px;
+  color: var(--midnight);
+}
+
+.start-dialog__btn:disabled {
+  background-color: var(--ship-bg-color);
+}
+
+.start-dialog__btn:not(.start-dialog__btn:disabled):hover {
+  background-color: var(--mild-white-hover);
+  cursor: pointer;
+}
+
+.start-dialog__btn:not(.start-dialog__btn:disabled) {
+  color: var(--midnight);
+  background-color: var(--mild-white);
 }
