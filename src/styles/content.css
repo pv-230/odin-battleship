@@ -28,13 +28,11 @@ body {
 }
 
 .content {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   justify-content: center;
-  align-items: center;
   align-content: center;
+  justify-items: center;
   gap: 20px;
-  padding: 10px 0;
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -45,14 +43,21 @@ body {
 .player-space,
 .computer-space {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 20px;
+  height: fit-content;
+  width: fit-content;
 }
 
-.flex-break {
-  width: 100%;
+.player-space {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.computer-space {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
 }
 
 button {
@@ -63,6 +68,9 @@ button {
 
 .message-window-wrapper {
   height: 225px;
+  width: fit-content;
+  grid-column: 1 / 3;
+  grid-row: 2 / 3;
 }
 
 .message-window {
