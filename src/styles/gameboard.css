@@ -4,8 +4,8 @@
   grid-template-rows: repeat(11, 1fr);
   border: 2px solid var(--midnight);
   border-radius: var(--default-border-radius);
-  width: clamp(275px, 80vw, 400px);
-  height: clamp(275px, 80vw, 400px);
+  width: clamp(280px, 30vw, 500px);
+  height: clamp(280px, 30vw, 500px);
   color: var(--midnight);
   font-weight: bold;
   background-color: var(--gameboard-bg-color);
@@ -43,14 +43,17 @@
 
 .gameboard__tile_ship {
   background-color: var(--ship-selected-color);
+  transition: background-color 400ms;
 }
 
 .gameboard__tile_missed {
   background-color: var(--tile-missed-color);
+  transition: background-color 400ms;
 }
 
 .gameboard__tile_hit {
   background-color: var(--ship-bg-color);
+  transition: background-color 400ms;
 }
 
 .gameboard__tile_placement {
