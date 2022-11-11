@@ -83,6 +83,7 @@
   width: 100%;
   color: var(--midnight);
   font-weight: bold;
+  background-color: var(--gameboard-bg-color);
 }
 
 .ship-direction__rotator {

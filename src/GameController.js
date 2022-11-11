@@ -41,7 +41,7 @@ const handlePlayerAttack = (e) => {
     renderBoard(computerBoard, false);
 
     if (computerBoard.getTile(tileStr).ship && computerBoard.getTile(tileStr).ship.isSunk()) {
-      updateComputerShipStatus();
+      updateComputerShipStatus(false);
     }
 
     const statusStr = statusToString(computerBoard.getTile(tileStr).status);
@@ -92,7 +92,7 @@ const renderBoard = (gameboard, showShips) => {
   let tileGrid;
 
   // Selects the appropriate board
-  if (showShips) {
+  if (gameboard === playerBoard) {
     tileGrid = document.querySelector('.gameboard_player > .gameboard__tile-grid');
   } else {
     tileGrid = document.querySelector('.gameboard_computer > .gameboard__tile-grid');
@@ -269,7 +269,7 @@ const updatePlayerShipStatus = () => {
 /**
  * Colors the ships in the computer's ship status window according to their status.
  */
-const updateComputerShipStatus = () => {
+const updateComputerShipStatus = (showDamaged = true) => {
   const shipElements = [...document.querySelectorAll('.computer-ships__ship')];
 
   // Clear any highlighted ships
@@ -283,7 +283,7 @@ const updateComputerShipStatus = () => {
     if (matchingShip.ref.isSunk()) {
       shipElement.classList.remove('computer-ships__ship_damaged');
       shipElement.classList.add('computer-ships__ship_sunk');
-    } else if (matchingShip.ref.getHits() > 0) {
+    } else if (showDamaged && matchingShip.ref.getHits() > 0) {
       shipElement.classList.remove('computer-ships__ship_undamaged');
       shipElement.classList.add('computer-ships__ship_damaged');
     } else {
@@ -428,10 +428,11 @@ const startGame = () => {
     shipElement.removeEventListener('click', handleShipRemove);
   });
 
-  // Registers event listeners for computer tiles
+  // Registers event listeners for computer tiles and reset tile styling
   const computerTiles = [...document.querySelectorAll('.gameboard_computer .gameboard__tile')];
   computerTiles.forEach((tile) => {
     tile.addEventListener('click', handlePlayerAttack);
+    tile.classList.remove('gameboard__tile_disabled');
   });
 
   updateComputerShipStatus();
@@ -506,7 +507,10 @@ const resetGame = () => {
 const endGame = (winner) => {
   // Removes player ability to continue attack
   const tiles = [...document.querySelectorAll('.gameboard_computer .gameboard__tile')];
-  tiles.forEach((tile) => tile.removeEventListener('click', handlePlayerAttack));
+  tiles.forEach((tile) => {
+    tile.removeEventListener('click', handlePlayerAttack);
+    tile.classList.add('gameboard__tile_disabled');
+  });
 
   const resetBtn = document.querySelector('.message-window__reset-btn');
   resetBtn.classList.remove('hidden');
@@ -537,6 +541,8 @@ const endTurn = () => {
   showStandardMsg(`The enemy attacked ${tileStr} and ${statusStr}.`, true);
 
   if (playerBoard.isDefeated()) {
+    updateComputerShipStatus();
+    renderBoard(computerBoard, true);
     endGame(computer);
   }
 };
@@ -753,7 +759,7 @@ const initialize = () => {
   resetButton.addEventListener('click', resetGame);
 
   // TEST
-  testFight();
+  testFight(true);
 };
 
 export default initialize;

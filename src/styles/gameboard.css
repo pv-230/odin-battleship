@@ -36,8 +36,8 @@
 }
 
 .gameboard_computer
-  .gameboard__tile:hover:not(.gameboard__tile_ship, .gameboard__tile_hit, .gameboard__tile_missed) {
-  background-color: var(--mild-white);
+  .gameboard__tile:hover:not(.gameboard__tile_ship, .gameboard__tile_hit, .gameboard__tile_missed, .gameboard__tile_disabled) {
+  background-color: var(--tile-hover-color);
   cursor: pointer;
 }
 
@@ -120,8 +120,9 @@
 .start-dialog__btn {
   border: 1px solid var(--midnight);
   border-radius: var(--default-border-radius);
-  padding: 5px;
+  padding: 5px 10px;
   color: var(--midnight);
+  font-weight: bold;
 }
 
 .start-dialog__btn:disabled {
