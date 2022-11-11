@@ -657,59 +657,59 @@ const showErrorMsg = (msg) => {
 /**
  * Allows two computers to play against each other.
  */
-const testFight = (bothComputers = false) => {
-  const shipElements = [...document.querySelectorAll('.player-ships__ship')];
-  shipElements.forEach((shipElement) => {
-    shipElement.removeEventListener('click', handleShipSelection);
-    shipElement.classList.add('player-ships__ship_placed');
-  });
+// const testFight = (bothComputers = false) => {
+//   const shipElements = [...document.querySelectorAll('.player-ships__ship')];
+//   shipElements.forEach((shipElement) => {
+//     shipElement.removeEventListener('click', handleShipSelection);
+//     shipElement.classList.add('player-ships__ship_placed');
+//   });
 
-  playerShips.push({
-    type: 'carrier',
-    ref: playerBoard.placeShipRandom(5),
-  });
-  playerShips.push({
-    type: 'battleship',
-    ref: playerBoard.placeShipRandom(4),
-  });
-  playerShips.push({
-    type: 'cruiser',
-    ref: playerBoard.placeShipRandom(3),
-  });
-  playerShips.push({
-    type: 'submarine',
-    ref: playerBoard.placeShipRandom(3),
-  });
-  playerShips.push({
-    type: 'destroyer',
-    ref: playerBoard.placeShipRandom(2),
-  });
+//   playerShips.push({
+//     type: 'carrier',
+//     ref: playerBoard.placeShipRandom(5),
+//   });
+//   playerShips.push({
+//     type: 'battleship',
+//     ref: playerBoard.placeShipRandom(4),
+//   });
+//   playerShips.push({
+//     type: 'cruiser',
+//     ref: playerBoard.placeShipRandom(3),
+//   });
+//   playerShips.push({
+//     type: 'submarine',
+//     ref: playerBoard.placeShipRandom(3),
+//   });
+//   playerShips.push({
+//     type: 'destroyer',
+//     ref: playerBoard.placeShipRandom(2),
+//   });
 
-  renderBoard(playerBoard, true);
-  updatePlayerShipStatus();
-  startGame();
+//   renderBoard(playerBoard, true);
+//   updatePlayerShipStatus();
+//   startGame();
 
-  if (!bothComputers) return;
+//   if (!bothComputers) return;
 
-  for (let i = 0; i < 99; i++) {
-    if (playerBoard.isDefeated()) break;
+//   for (let i = 0; i < 99; i++) {
+//     if (playerBoard.isDefeated()) break;
 
-    const tileStr = player.attack(computerBoard);
-    playerAttackCount++;
-    const statusStr = statusToString(computerBoard.getTile(tileStr).status);
-    showStandardMsg(`You attacked ${tileStr} and ${statusStr}.`);
+//     const tileStr = player.attack(computerBoard);
+//     playerAttackCount++;
+//     const statusStr = statusToString(computerBoard.getTile(tileStr).status);
+//     showStandardMsg(`You attacked ${tileStr} and ${statusStr}.`);
 
-    if (computerBoard.isDefeated()) {
-      endGame(player);
-      break;
-    }
+//     if (computerBoard.isDefeated()) {
+//       endGame(player);
+//       break;
+//     }
 
-    endTurn();
-  }
+//     endTurn();
+//   }
 
-  renderBoard(computerBoard, false);
-  updateComputerShipStatus();
-};
+//   renderBoard(computerBoard, false);
+//   updateComputerShipStatus();
+// };
 
 // ============================================================================
 //  Exported functions
@@ -757,9 +757,6 @@ const initialize = () => {
   // Registers event listener for reset button
   const resetButton = document.querySelector('.message-window__reset-btn');
   resetButton.addEventListener('click', resetGame);
-
-  // TEST
-  testFight(true);
 };
 
 export default initialize;
