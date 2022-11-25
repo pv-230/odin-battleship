@@ -8,6 +8,7 @@ More information here: https://www.theodinproject.com/lessons/node-path-javascri
 - Webpack
 - ESLint
 - Jest
+- Lodash
 
 ## Screenshots
 ![First screenshot](/screenshots/screen1.png?raw=true)
