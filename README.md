@@ -12,3 +12,4 @@ More information here: https://www.theodinproject.com/lessons/node-path-javascri
 
 ## Screenshots
 ![First screenshot](/screenshots/screen1.png?raw=true)
+![Second screenshot](/screenshots/screen2.png?raw=true)
